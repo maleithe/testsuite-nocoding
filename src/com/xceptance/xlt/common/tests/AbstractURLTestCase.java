@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.yaml.snakeyaml.Yaml;
 
 import com.xceptance.xlt.api.engine.Session;
 import com.xceptance.xlt.api.tests.AbstractTestCase;
@@ -89,7 +91,23 @@ public class AbstractURLTestCase extends AbstractTestCase
                                                                                  + ".data.directory",
                                                                              "config" + File.separatorChar + "data");
         
-        if (useYaml == false)
+        if (useYaml == true)
+        {
+            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".yml"));
+            
+            //TODO
+            //read from yaml file
+            
+            final InputStream input = new FileInputStream(file); 
+            final Yaml yaml = new Yaml();
+            
+            for(final Object data : yaml.loadAll(input))
+            {
+                // add data
+            }
+            
+        }
+        else
         {
             final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".csv"));
 
