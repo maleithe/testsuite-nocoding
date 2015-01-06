@@ -42,6 +42,7 @@ import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.common.XltConstants;
 import com.xceptance.xlt.common.util.CSVBasedURLAction;
+import com.xceptance.xlt.common.util.YAMLBasedURLAction;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
 /**
@@ -51,7 +52,12 @@ import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 public class AbstractURLTestCase extends AbstractTestCase
 {
     /**
-     * Our data. This also guards it.
+     * Our data for yaml. This also guards it.
+     */
+    protected final List<YAMLBasedURLAction> YAMLBasedActions = new ArrayList<YAMLBasedURLAction>();
+
+    /**
+     * Our data for csv. This also guards it.
      */
     protected final List<CSVBasedURLAction> csvBasedActions = new ArrayList<CSVBasedURLAction>();
 
@@ -103,7 +109,7 @@ public class AbstractURLTestCase extends AbstractTestCase
             
             for(final Object data : yaml.loadAll(input))
             {
-                // add data
+                // add data from YAML to c
             }
             
         }
