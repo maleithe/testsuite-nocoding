@@ -79,6 +79,8 @@ public class AbstractURLTestCase extends AbstractTestCase
         login = getProperty("login", getProperty("com.xceptance.xlt.auth.userName"));
         password = getProperty("password", getProperty("com.xceptance.xlt.auth.password"));
 
+        final boolean useYaml = XltProperties.getInstance().getProperty("useYAML", false);
+        
         // load the data. Ideally we would offload the file searching to
         // XltProperties.getDataFile(String name)
         // or XltProperties.getDataFile(String name, String locale)
@@ -86,96 +88,100 @@ public class AbstractURLTestCase extends AbstractTestCase
         final String dataDirectory = XltProperties.getInstance().getProperty(XltConstants.XLT_PACKAGE_PATH
                                                                                  + ".data.directory",
                                                                              "config" + File.separatorChar + "data");
-        final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".csv"));
-
-        BufferedReader br = null;
-        boolean incorrectLines = false;
-
-        try
+        
+        if (useYaml == false)
         {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".csv"));
 
-            // permit # as comment, empty lines, set comma as separator, and activate the header
-            final CSVFormat csvFormat = CSVFormat.RFC4180.toBuilder().withIgnoreEmptyLines(true).withCommentStart('#')
-                                                         .withHeader().withIgnoreSurroundingSpaces(true).build();
-            final CSVParser parser = new CSVParser(br, csvFormat);
-            final Iterator<CSVRecord> csvRecords = parser.iterator();
+            BufferedReader br = null;
+            boolean incorrectLines = false;
 
-            // verify header fields to avoid problems with incorrect spelling or spaces
-            final Map<String, Integer> headerMap = parser.getHeaderMap();
-
-            for (final String headerField : headerMap.keySet())
+            try
             {
-                if (!CSVBasedURLAction.isPermittedHeaderField(headerField))
-                {
-                    Assert.fail(MessageFormat.format("Unsupported or misspelled header field: {0}", headerField));
-                }
-            }
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 
-            // go over all lines, this is a little odd, because we have to catch the iterator exception
-            while (true)
-            {
-                try
+                // permit # as comment, empty lines, set comma as separator, and activate the header
+                final CSVFormat csvFormat = CSVFormat.RFC4180.toBuilder().withIgnoreEmptyLines(true).withCommentStart('#')
+                                                             .withHeader().withIgnoreSurroundingSpaces(true).build();
+                final CSVParser parser = new CSVParser(br, csvFormat);
+                final Iterator<CSVRecord> csvRecords = parser.iterator();
+
+                // verify header fields to avoid problems with incorrect spelling or spaces
+                final Map<String, Integer> headerMap = parser.getHeaderMap();
+
+                for (final String headerField : headerMap.keySet())
                 {
-                    final boolean hasNext = csvRecords.hasNext();
-                    if (!hasNext)
+                    if (!CSVBasedURLAction.isPermittedHeaderField(headerField))
                     {
-                        break;
+                        Assert.fail(MessageFormat.format("Unsupported or misspelled header field: {0}", headerField));
                     }
                 }
-                catch (final Exception e)
-                {
-                    // the plus 1 is meant to correct the increment missing because of the exception
-                    throw new RuntimeException(
-                                               MessageFormat.format("Line at {0} is invalid, because of <{1}>. Line is ignored.",
-                                                                    parser.getLineNumber() + 1, e.getMessage()));
-                }
 
-                final CSVRecord csvRecord = csvRecords.next();
-
-                // only take ok lines
-                if (csvRecord.isConsistent())
+                // go over all lines, this is a little odd, because we have to catch the iterator exception
+                while (true)
                 {
-                    // guard against data exceptions
                     try
                     {
-                        // do we have an url?
-                        if (csvRecord.get(CSVBasedURLAction.URL) != null)
+                        final boolean hasNext = csvRecords.hasNext();
+                        if (!hasNext)
                         {
-                            // take it
-                            csvBasedActions.add(new CSVBasedURLAction(csvRecord, interpreter));
-                        }
-                        else
-                        {
-                            XltLogger.runTimeLogger.error(MessageFormat.format("Line at {0} does not contain any URL. Line is ignored: {1}",
-                                                                               parser.getLineNumber(), csvRecord));
+                            break;
                         }
                     }
                     catch (final Exception e)
                     {
+                        // the plus 1 is meant to correct the increment missing because of the exception
                         throw new RuntimeException(
-                                                   MessageFormat.format("Line at {0} is invalid, because of <{2}>. Line is ignored: {1}",
-                                                                        parser.getLineNumber(), csvRecord,
-                                                                        e.getMessage()));
+                                                   MessageFormat.format("Line at {0} is invalid, because of <{1}>. Line is ignored.",
+                                                                        parser.getLineNumber() + 1, e.getMessage()));
+                    }
+
+                    final CSVRecord csvRecord = csvRecords.next();
+
+                    // only take ok lines
+                    if (csvRecord.isConsistent())
+                    {
+                        // guard against data exceptions
+                        try
+                        {
+                            // do we have an url?
+                            if (csvRecord.get(CSVBasedURLAction.URL) != null)
+                            {
+                                // take it
+                                csvBasedActions.add(new CSVBasedURLAction(csvRecord, interpreter));
+                            }
+                            else
+                            {
+                                XltLogger.runTimeLogger.error(MessageFormat.format("Line at {0} does not contain any URL. Line is ignored: {1}",
+                                                                                   parser.getLineNumber(), csvRecord));
+                            }
+                        }
+                        catch (final Exception e)
+                        {
+                            throw new RuntimeException(
+                                                       MessageFormat.format("Line at {0} is invalid, because of <{2}>. Line is ignored: {1}",
+                                                                            parser.getLineNumber(), csvRecord,
+                                                                            e.getMessage()));
+                        }
+                    }
+                    else
+                    {
+                        XltLogger.runTimeLogger.error(MessageFormat.format("Line at {0} has not been correctly formatted. Line is ignored: {1}",
+                                                                           parser.getLineNumber(), csvRecord));
+                        incorrectLines = true;
                     }
                 }
-                else
-                {
-                    XltLogger.runTimeLogger.error(MessageFormat.format("Line at {0} has not been correctly formatted. Line is ignored: {1}",
-                                                                       parser.getLineNumber(), csvRecord));
-                    incorrectLines = true;
-                }
             }
-        }
-        finally
-        {
-            IOUtils.closeQuietly(br);
-        }
+            finally
+            {
+                IOUtils.closeQuietly(br);
+            }
 
-        // stop if we have anything the is incorrect, avoid half running test cases
-        if (incorrectLines)
-        {
-            throw new RuntimeException("Found incorrectly formatted lines. Stopping here.");
+            // stop if we have anything the is incorrect, avoid half running test cases
+            if (incorrectLines)
+            {
+                throw new RuntimeException("Found incorrectly formatted lines. Stopping here.");
+            }
         }
     }
 
