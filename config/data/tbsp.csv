@@ -1,0 +1,3 @@
+Type, Name, URL, Method, Parameters, ResponseCode, XPath, Text, Encoded
+
+A,Homepage,"https://www.xceptance.com/de/",GET,,,,,false

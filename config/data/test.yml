@@ -1,8 +1,5 @@
 Action:
-	# the name for the action
 	name: Homepage
-
-	# the requests details
 	requests:
 		url: "https://www.xceptance.com/de/"
 		type: GET # GET and POST for now only
