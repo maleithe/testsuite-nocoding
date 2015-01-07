@@ -1,15 +1,15 @@
 Action:
-    name: Homepage1
-    requests:
-        url: "https://www.xceptance.com/de/"
-        type: GET
-        encoded: false
+    Name: Homepage1
+    Requests:
+        URL: "https://www.xceptance.com/de/"
+        Type: GET
+        Encoded: false
 
 ---
 
 Action:
-    name: Homepage2
-    requests:
-        url: "https://www.xceptance.com/de/"
-        type: GET
-        encoded: false        
+    Name: Homepage2
+    Requests:
+        URL: "https://www.xceptance.com/de/"
+        Type: GET
+        Encoded: false       
