@@ -102,14 +102,18 @@ public class AbstractURLTestCase extends AbstractTestCase
             final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".yml"));
             
             //TODO
+            // before reading the yaml file replace all \t with 4 times \s
+            
+            //TODO
             //read from yaml file
+            
             
             final InputStream input = new FileInputStream(file); 
             final Yaml yaml = new Yaml();
             
             for(final Object data : yaml.loadAll(input))
             {
-                // add data from YAML to c
+                YAMLBasedActions.add(new YAMLBasedURLAction(data, interpreter));
             }
             
         }
