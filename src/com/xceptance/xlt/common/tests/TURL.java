@@ -19,9 +19,11 @@ package com.xceptance.xlt.common.tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.common.actions.SimpleURL;
 import com.xceptance.xlt.common.actions.SimpleURL_XHR;
 import com.xceptance.xlt.common.util.CSVBasedURLAction;
+import com.xceptance.xlt.common.util.YAMLBasedURLAction;
 
 /**
  * This is a simple single URL test case. It can be used to create considerable load for simple investigations. Cookie
@@ -35,57 +37,92 @@ public class TURL extends AbstractURLTestCase
         // our action tracker to build up a correct chain of pages
         SimpleURL lastAction = null;
 
-        // let's loop about the data we have
-        for (final CSVBasedURLAction csvBasedAction : csvBasedActions)
+        final boolean useYaml = XltProperties.getInstance().getProperty("useYAML", false);
+        if (useYaml == true)
         {
-            // ok, usual action or static?
-            if (csvBasedAction.isAction())
+            //TODO do the yaml tests, just for action yet
+            // let's loop about the data we have
+            for (final YAMLBasedURLAction yamlBasedAction : yamlBasedActions)
             {
-                if (lastAction == null)
+                // check if usual action
+                if(yamlBasedAction.isAction())
                 {
-                    // our first action, so start the browser too
-                    lastAction = new SimpleURL(this, csvBasedAction, login, password);
+                    if (lastAction == null)
+                    {
+                        // our first action, so start the browser too
+                        lastAction = new SimpleURL(this, yamlBasedAction, login, password);
+                    }
+                    else
+                    {
+                        // Until know just the request URLs were collected. So run the action now.
+                        lastAction.run();
+
+                        // And prepare the subsequent action
+                        lastAction = new SimpleURL(this, lastAction, yamlBasedAction);
+                    }
                 }
-                else
+                if (lastAction != null)
                 {
-                    // Until know just the request URLs were collected. So run the action now.
                     lastAction.run();
-
-                    // And prepare the subsequent action
-                    lastAction = new SimpleURL(this, lastAction, csvBasedAction);
                 }
+                
             }
-
-            // this is the part that deals with the static downloads
-            else if (csvBasedAction.isStaticContent())
-            {
-                if (lastAction == null)
-                {
-                    // we do not have any action yet, so we have to make one up
-                    lastAction = new SimpleURL(this, csvBasedAction, login, password);
-                }
-                else
-                {
-                    // it's content that belong to the last known action
-                    lastAction.addRequest(csvBasedAction.getUrlString());
-                }
-            }
-
-            // handle XHR actions
-            else if (csvBasedAction.isXHRAction())
-            {
-                if (lastAction == null)
-                {
-                    Assert.fail("AJAX actions cannot be used as first action");
-                }
-
-                lastAction.run();
-                lastAction = new SimpleURL_XHR(this, lastAction, csvBasedAction);
-            }
+            
         }
-        if (lastAction != null)
+        else
         {
-            lastAction.run();
+            // let's loop about the data we have
+            for (final CSVBasedURLAction csvBasedAction : csvBasedActions)
+            {
+                // ok, usual action or static?
+                if (csvBasedAction.isAction())
+                {
+                    if (lastAction == null)
+                    {
+                        // our first action, so start the browser too
+                        lastAction = new SimpleURL(this, csvBasedAction, login, password);
+                    }
+                    else
+                    {
+                        // Until know just the request URLs were collected. So run the action now.
+                        lastAction.run();
+
+                        // And prepare the subsequent action
+                        lastAction = new SimpleURL(this, lastAction, csvBasedAction);
+                    }
+                }
+
+                // this is the part that deals with the static downloads
+                else if (csvBasedAction.isStaticContent())
+                {
+                    if (lastAction == null)
+                    {
+                        // we do not have any action yet, so we have to make one up
+                        lastAction = new SimpleURL(this, csvBasedAction, login, password);
+                    }
+                    else
+                    {
+                        // it's content that belong to the last known action
+                        lastAction.addRequest(csvBasedAction.getUrlString());
+                    }
+                }
+
+                // handle XHR actions
+                else if (csvBasedAction.isXHRAction())
+                {
+                    if (lastAction == null)
+                    {
+                        Assert.fail("AJAX actions cannot be used as first action");
+                    }
+
+                    lastAction.run();
+                    lastAction = new SimpleURL_XHR(this, lastAction, csvBasedAction);
+                }
+            }
+            if (lastAction != null)
+            {
+                lastAction.run();
+            }
         }
     }
 }
