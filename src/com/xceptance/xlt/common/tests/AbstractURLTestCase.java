@@ -54,7 +54,7 @@ public class AbstractURLTestCase extends AbstractTestCase
     /**
      * Our data for yaml. This also guards it.
      */
-    protected final List<YAMLBasedURLAction> YAMLBasedActions = new ArrayList<YAMLBasedURLAction>();
+    protected final List<YAMLBasedURLAction> yamlBasedActions = new ArrayList<YAMLBasedURLAction>();
 
     /**
      * Our data for csv. This also guards it.
@@ -113,7 +113,7 @@ public class AbstractURLTestCase extends AbstractTestCase
             
             for(final Object data : yaml.loadAll(input))
             {
-                YAMLBasedActions.add(new YAMLBasedURLAction(data, interpreter));
+                yamlBasedActions.add(new YAMLBasedURLAction(data, interpreter));
             }
             
         }
