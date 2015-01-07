@@ -162,4 +162,14 @@ public class YAMLBasedURLAction
         // System.out.println(encoded);
 
     }
+    
+    /**
+     * Returns true if this is an action to be executed
+     * 
+     * @return true if this is an action
+     */
+    public boolean isAction()
+    {
+        return type.equals(TYPE_ACTION);
+    }
 }
