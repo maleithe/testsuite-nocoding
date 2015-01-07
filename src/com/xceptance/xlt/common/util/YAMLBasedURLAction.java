@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
@@ -182,5 +183,31 @@ public class YAMLBasedURLAction
     public String getName(final AbstractURLTestCase testCase)
     {
         return interpreter != null ? interpreter.processDynamicData(testCase, name) : name;
+    }
+    
+    /**
+     * Returns the url of that action. Is required.
+     * 
+     * @param testCase
+     *            for the correct data resulution
+     * @return the url with data resolution
+     * @throws MalformedURLException
+     */
+    public URL getURL(final AbstractURLTestCase testCase) throws MalformedURLException
+    {
+        // process bean shell part
+        return interpreter != null ? new URL(interpreter.processDynamicData(testCase, urlString)) : url;
+    }
+    
+    public HttpMethod getMethod()
+    {
+        if (this.method.equals(POST))
+        {
+            return HttpMethod.POST;
+        }
+        else
+        {
+            return HttpMethod.GET;
+        }
     }
 }

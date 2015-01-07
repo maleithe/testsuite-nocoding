@@ -50,7 +50,8 @@ public class TURL extends AbstractURLTestCase
                     if (lastAction == null)
                     {
                         // our first action, so start the browser too
-                        lastAction = new SimpleURL(this, yamlBasedAction, login, password);
+                        //TODO in case of csv still null, only for trying
+                        lastAction = new SimpleURL(this, yamlBasedAction, null, login, password);
                     }
                     else
                     {
@@ -58,14 +59,13 @@ public class TURL extends AbstractURLTestCase
                         lastAction.run();
 
                         // And prepare the subsequent action
-                        lastAction = new SimpleURL(this, lastAction, yamlBasedAction);
+                        lastAction = new SimpleURL(this, lastAction, yamlBasedAction, null);
                     }
                 }
-                if (lastAction != null)
-                {
-                    lastAction.run();
-                }
-                
+            }
+            if (lastAction != null)
+            {
+                lastAction.run();
             }
             
         }
@@ -80,7 +80,7 @@ public class TURL extends AbstractURLTestCase
                     if (lastAction == null)
                     {
                         // our first action, so start the browser too
-                        lastAction = new SimpleURL(this, csvBasedAction, login, password);
+                        lastAction = new SimpleURL(this, csvBasedAction, null, login, password);
                     }
                     else
                     {
@@ -88,7 +88,7 @@ public class TURL extends AbstractURLTestCase
                         lastAction.run();
 
                         // And prepare the subsequent action
-                        lastAction = new SimpleURL(this, lastAction, csvBasedAction);
+                        lastAction = new SimpleURL(this, lastAction, csvBasedAction, null);
                     }
                 }
 
@@ -98,7 +98,7 @@ public class TURL extends AbstractURLTestCase
                     if (lastAction == null)
                     {
                         // we do not have any action yet, so we have to make one up
-                        lastAction = new SimpleURL(this, csvBasedAction, login, password);
+                        lastAction = new SimpleURL(this, csvBasedAction, null, login, password);
                     }
                     else
                     {
