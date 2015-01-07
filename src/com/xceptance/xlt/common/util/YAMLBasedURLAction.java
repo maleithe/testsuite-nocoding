@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
 public class YAMLBasedURLAction
@@ -171,5 +172,15 @@ public class YAMLBasedURLAction
     public boolean isAction()
     {
         return type.equals(TYPE_ACTION);
+    }
+    
+    /**
+     * Returns the name of this line.
+     * 
+     * @return the name of this line
+     */
+    public String getName(final AbstractURLTestCase testCase)
+    {
+        return interpreter != null ? interpreter.processDynamicData(testCase, name) : name;
     }
 }
