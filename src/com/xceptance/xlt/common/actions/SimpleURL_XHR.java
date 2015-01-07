@@ -63,7 +63,7 @@ public class SimpleURL_XHR extends SimpleURL
 
         UserAgentUtils.setUserAgentUID(this.getWebClient(), testCase.getProperty("userAgent.UID", false));
 
-        final WebRequest request = createWebRequestSettings(action.getURL(), action.getMethod(), action.getParameters());
+        final WebRequest request = createWebRequestSettings(csvAction.getURL(), csvAction.getMethod(), csvAction.getParameters());
         request.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
         request.setAdditionalHeader("Referer", page.getUrl().toExternalForm());
         request.setXHR();
@@ -71,7 +71,7 @@ public class SimpleURL_XHR extends SimpleURL
         response = getWebClient().loadWebResponse(request);
         setHtmlPage(page);
 
-        downloader.loadRequests(this.testCase, this.action);
+        downloader.loadRequests(this.testCase, this.csvAction);
     }
 
     /**
@@ -81,7 +81,7 @@ public class SimpleURL_XHR extends SimpleURL
     protected void postValidate() throws Exception
     {
         // response code correct?
-        Assert.assertEquals("Response code did not match", action.getHttpResponseCodeValidator().getHttpResponseCode(),
+        Assert.assertEquals("Response code did not match", csvAction.getHttpResponseCodeValidator().getHttpResponseCode(),
                             response.getStatusCode());
 
         final HtmlPage page = getHtmlPage();
@@ -96,8 +96,8 @@ public class SimpleURL_XHR extends SimpleURL
             return;
         }
 
-        final String xpath = action.getXPath(testCase);
-        final String text = action.getText(testCase);
+        final String xpath = csvAction.getXPath(testCase);
+        final String text = csvAction.getText(testCase);
 
         // check anything else?
         if (xpath != null)
@@ -128,7 +128,7 @@ public class SimpleURL_XHR extends SimpleURL
         }
 
         // take care of the parameters to fill up the interpreter
-        final List<String> xpathGetters = action.getXPathGetterList(testCase);
+        final List<String> xpathGetters = csvAction.getXPathGetterList(testCase);
         final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
         for (int i = 0; i < xpathGetters.size(); i++)
         {
@@ -165,7 +165,7 @@ public class SimpleURL_XHR extends SimpleURL
 
         }
         // send it back for spicing up the interpreter
-        action.setXPathGetterResult(xpathGettersResults);
+        csvAction.setXPathGetterResult(xpathGettersResults);
 
     }
 }
