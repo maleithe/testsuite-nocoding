@@ -116,7 +116,7 @@ public class AbstractURLTestCase extends AbstractTestCase
                         // check type final before casting
                         if (yamlRecordList.get(yamlCounter) instanceof Map && yamlRecordList.get(yamlCounter) != null)
                         {
-                            urlActions.add(new URLAction(null, (Map) yamlRecordList.get(yamlCounter), interpreter));
+                            urlActions.add(new URLAction(null, (Map<String, Object>) yamlRecordList.get(yamlCounter), interpreter));
                         }
                     }
                 }
