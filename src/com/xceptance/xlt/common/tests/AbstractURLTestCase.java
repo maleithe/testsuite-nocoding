@@ -54,7 +54,7 @@ public class AbstractURLTestCase extends AbstractTestCase
      * Our data from CSV or YAML. This also guards it.
      */
     protected final List<URLAction> urlActions = new ArrayList<URLAction>();
-
+    
     /**
      * Our interpreter engine for that test case
      */
@@ -104,11 +104,14 @@ public class AbstractURLTestCase extends AbstractTestCase
             
             final InputStream input = new FileInputStream(file); 
             final Yaml yaml = new Yaml();
-            
             for(final Object yamlRecord : yaml.loadAll(input))
             {
                 // take it
-                urlActions.add(new URLAction(null, yamlRecord, interpreter));
+                final List<?> yamlRecordList = (List<?>) yamlRecord;
+                for (int yamlCounter = 0; yamlCounter < yamlRecordList.size(); yamlCounter++)
+                {
+                    urlActions.add(new URLAction(null, (Map) yamlRecordList.get(yamlCounter), interpreter));
+                }
             }
             
         }

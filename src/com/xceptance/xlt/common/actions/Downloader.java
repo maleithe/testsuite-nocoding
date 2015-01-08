@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
-import com.xceptance.xlt.common.util.CSVBasedURLAction;
 import com.xceptance.xlt.common.util.StaticContentDownloader;
+import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.engine.XltWebClient;
 
 public class Downloader
@@ -37,7 +37,7 @@ public class Downloader
         this.webClient = webClient;
     }
 
-    protected void loadRequests(final AbstractURLTestCase testCase, final CSVBasedURLAction action) throws Exception
+    protected void loadRequests(final AbstractURLTestCase testCase, final URLAction action) throws Exception
     {
         if (!urls.isEmpty())
         {

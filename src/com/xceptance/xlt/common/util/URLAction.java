@@ -131,7 +131,7 @@ public class URLAction
      * @throws UnsupportedEncodingException
      * @throws MalformedURLException
      */
-    public URLAction(final CSVRecord record, final Object object, final ParamInterpreter interpreter)
+    public URLAction(final CSVRecord record, final Map yamlRecord, final ParamInterpreter interpreter)
         throws UnsupportedEncodingException, MalformedURLException
     {
         // check if using YAML or CSV
@@ -141,11 +141,11 @@ public class URLAction
         {
             // no bean shell, so we do not do anything, satisfy final here
             this.interpreter = interpreter;
-
+            
             // TODO extend the types and build a fall back
             // check the type
-            String _type;
-            if (((Map) object).containsKey("Action"))
+            final String _type;
+            if (yamlRecord.containsKey("Action"))
             {
                 _type = TYPE_ACTION;
             }
@@ -154,10 +154,9 @@ public class URLAction
                 // FIXME not a fallback
                 _type = TYPE_ACTION;
             }
-
             this.type = _type;
 
-            final Object yamlAction = ((Map) object).get("Action");
+            final Object yamlAction = yamlRecord.get("Action");
 
             // TODO autonaming if no Name is available
             this.name = ((Map) yamlAction).get(NAME).toString();
@@ -352,29 +351,39 @@ public class URLAction
         return interpreter != null ? interpreter.processDynamicData(testCase, name) : name;
     }
     
+  /**
+  * Returns the url of that action. Is required.
+  * 
+  * @param testCase
+  *            for the correct data resulution
+  * @return the url with data resolution
+  * @throws MalformedURLException
+  */
+ public URL getURL(final AbstractURLTestCase testCase) throws MalformedURLException
+ {
+     // process bean shell part
+     return interpreter != null ? new URL(interpreter.processDynamicData(testCase, urlString)) : url;
+ }
+ 
+ public HttpMethod getMethod()
+ {
+     if (this.method.equals(POST))
+     {
+         return HttpMethod.POST;
+     }
+     else
+     {
+         return HttpMethod.GET;
+     }
+ }
+ 
     /**
-     * Returns the url of that action. Is required.
+     * Returns the active interpreter. Important for testing.
      * 
-     * @param testCase
-     *            for the correct data resulution
-     * @return the url with data resolution
-     * @throws MalformedURLException
+     * @return The active bean interpreter.
      */
-    public URL getURL(final AbstractURLTestCase testCase) throws MalformedURLException
+    public ParamInterpreter getInterpreter()
     {
-        // process bean shell part
-        return interpreter != null ? new URL(interpreter.processDynamicData(testCase, urlString)) : url;
-    }
-
-    public HttpMethod getMethod()
-    {
-        if (this.method.equals(POST))
-        {
-            return HttpMethod.POST;
-        }
-        else
-        {
-            return HttpMethod.GET;
-        }
+        return interpreter;
     }
 }
