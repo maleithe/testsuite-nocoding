@@ -41,8 +41,7 @@ import com.xceptance.xlt.api.tests.AbstractTestCase;
 import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.common.XltConstants;
-import com.xceptance.xlt.common.util.CSVBasedURLAction;
-import com.xceptance.xlt.common.util.YAMLBasedURLAction;
+import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
 /**
@@ -52,14 +51,9 @@ import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 public class AbstractURLTestCase extends AbstractTestCase
 {
     /**
-     * Our data for yaml. This also guards it.
+     * Our data from CSV or YAML. This also guards it.
      */
-    protected final List<YAMLBasedURLAction> yamlBasedActions = new ArrayList<YAMLBasedURLAction>();
-
-    /**
-     * Our data for csv. This also guards it.
-     */
-    protected final List<CSVBasedURLAction> csvBasedActions = new ArrayList<CSVBasedURLAction>();
+    protected final List<URLAction> urlActions = new ArrayList<URLAction>();
 
     /**
      * Our interpreter engine for that test case
@@ -111,9 +105,10 @@ public class AbstractURLTestCase extends AbstractTestCase
             final InputStream input = new FileInputStream(file); 
             final Yaml yaml = new Yaml();
             
-            for(final Object data : yaml.loadAll(input))
+            for(final Object yamlRecord : yaml.loadAll(input))
             {
-                yamlBasedActions.add(new YAMLBasedURLAction(data, interpreter));
+                // take it
+                urlActions.add(new URLAction(null, yamlRecord, interpreter));
             }
             
         }
@@ -139,7 +134,7 @@ public class AbstractURLTestCase extends AbstractTestCase
 
                 for (final String headerField : headerMap.keySet())
                 {
-                    if (!CSVBasedURLAction.isPermittedHeaderField(headerField))
+                    if (!URLAction.isPermittedHeaderField(headerField))
                     {
                         Assert.fail(MessageFormat.format("Unsupported or misspelled header field: {0}", headerField));
                     }
@@ -173,10 +168,10 @@ public class AbstractURLTestCase extends AbstractTestCase
                         try
                         {
                             // do we have an url?
-                            if (csvRecord.get(CSVBasedURLAction.URL) != null)
+                            if (csvRecord.get(URLAction.URL) != null)
                             {
                                 // take it
-                                csvBasedActions.add(new CSVBasedURLAction(csvRecord, interpreter));
+                                urlActions.add(new URLAction(csvRecord, null, interpreter));
                             }
                             else
                             {

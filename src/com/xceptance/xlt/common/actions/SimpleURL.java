@@ -17,7 +17,6 @@
 package com.xceptance.xlt.common.actions;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -28,9 +27,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xceptance.common.util.RegExUtils;
 import com.xceptance.xlt.api.actions.AbstractHtmlPageAction;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
-import com.xceptance.xlt.common.util.CSVBasedURLAction;
+import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.common.util.UserAgentUtils;
-import com.xceptance.xlt.common.util.YAMLBasedURLAction;
 import com.xceptance.xlt.engine.XltWebClient;
 
 /**
@@ -39,15 +37,10 @@ import com.xceptance.xlt.engine.XltWebClient;
 public class SimpleURL extends AbstractHtmlPageAction
 {
     /**
-     * the CSV-action to be executed
+     * the action to be executed (CSV or YAML)
      */
-    protected final CSVBasedURLAction csvAction;
+    protected final URLAction urlAction;
 
-    /**
-     * the CSV-action to be executed
-     */
-    protected final YAMLBasedURLAction yamlAction;
-    
     /**
      * the test case reference for property lookup in the actions
      */
@@ -64,43 +57,13 @@ public class SimpleURL extends AbstractHtmlPageAction
      * @param previousAction
      * @param timerName
      */
-    public SimpleURL(final AbstractURLTestCase testCase, final CSVBasedURLAction csvAction, final YAMLBasedURLAction yamlAction, final String login,
+    public SimpleURL(final AbstractURLTestCase testCase, final URLAction urlAction, final String login,
         final String password)
     {
-        super(csvAction.getName(testCase));
-        this.csvAction = csvAction;
+        super(urlAction.getName(testCase));
+        this.urlAction = urlAction;
         this.testCase = testCase;
         this.downloader = new Downloader((XltWebClient) getWebClient());
-
-        // add credentials, if any
-        if (login != null && password != null)
-        {
-            final DefaultCredentialsProvider credentialsProvider = new DefaultCredentialsProvider();
-            credentialsProvider.addCredentials(login, password);
-
-            this.getWebClient().setCredentialsProvider(credentialsProvider);
-        }
-        
-        //TODO no yaml action needed here but still have to be initialized
-        this.yamlAction = yamlAction;
-    }
-    
-    /**
-     * The constructor for YAML-based actions when a new web session should be started.
-     * 
-     * @param previousAction
-     * @param timerName
-     */
-    public SimpleURL(final AbstractURLTestCase testCase, final YAMLBasedURLAction yamlAction, final CSVBasedURLAction csvAction, final String login,
-        final String password)
-    {
-        super(yamlAction.getName(testCase));
-        this.yamlAction = yamlAction;
-        this.testCase = testCase;
-        this.downloader = new Downloader((XltWebClient) getWebClient());
-        
-        //TODO no csv action needed here but still have to be initialized
-        this.csvAction = csvAction;
 
         // add credentials, if any
         if (login != null && password != null)
@@ -117,33 +80,14 @@ public class SimpleURL extends AbstractHtmlPageAction
      * @param timerName
      */
     public SimpleURL(final AbstractURLTestCase testCase, final AbstractHtmlPageAction prevAction,
-        final CSVBasedURLAction csvAction, final YAMLBasedURLAction yamlAction)
+        final URLAction urlAction)
     {
-        super(prevAction, csvAction.getName(testCase));
+        super(prevAction, urlAction.getName(testCase));
         this.testCase = testCase;
-        this.csvAction = csvAction;
+        this.urlAction = urlAction;
         this.downloader = new Downloader((XltWebClient) getWebClient());
-        
-        //TODO no yaml action needed here but still have to be initialized
-        this.yamlAction = yamlAction;
     }
 
-    /**
-     * @param previousAction
-     * @param timerName
-     */
-    public SimpleURL(final AbstractURLTestCase testCase, final AbstractHtmlPageAction prevAction,
-                     final YAMLBasedURLAction yamlAction, final CSVBasedURLAction csvAction)
-    {
-        super(prevAction, yamlAction.getName(testCase));
-        this.testCase = testCase;
-        this.yamlAction = yamlAction;
-        this.downloader = new Downloader((XltWebClient) getWebClient());
-        
-        //TODO no yaml action needed here but still have to be initialized
-        this.csvAction = csvAction;
-    }
-    
     /*
      * (non-Javadoc)
      * 
@@ -166,15 +110,15 @@ public class SimpleURL extends AbstractHtmlPageAction
         // set the user agent UID if required
         UserAgentUtils.setUserAgentUID(this.getWebClient(), testCase.getProperty("userAgent.UID", false));
 
-        //loadPage(yamlAction.getURL(testCase), yamlAction.getMethod(), yamlAction.getParameters(testCase));
-        //executing without parameters for testing
-        loadPage(yamlAction.getURL(testCase), yamlAction.getMethod(), null);
-                
-        // make element Look Up and add to interpreter 
+        // loadPage(yamlAction.getURL(testCase), yamlAction.getMethod(), yamlAction.getParameters(testCase));
+        // executing without parameters for testing
+        loadPage(urlAction.getURL(testCase), urlAction.getMethod(), null);
+
+        // make element Look Up and add to interpreter
         final HtmlPage page = getHtmlPage();
-        //addPageToInterpreter(page);
-  
-        //downloader.loadRequests(this.testCase, this.yamlAction);
+        // addPageToInterpreter(page);
+
+        // downloader.loadRequests(this.testCase, this.yamlAction);
     }
 
     /*
@@ -188,14 +132,14 @@ public class SimpleURL extends AbstractHtmlPageAction
         final HtmlPage page = getHtmlPage();
 
         // response code correct?
-        //csvAction.getHttpResponseCodeValidator().validate(page);
+        // csvAction.getHttpResponseCodeValidator().validate(page);
 
-        //final String xpath = csvAction.getXPath(testCase);
-        //final String text = csvAction.getText(testCase);
+        // final String xpath = csvAction.getXPath(testCase);
+        // final String text = csvAction.getText(testCase);
 
         final String xpath = null;
         final String text = null;
-        
+
         // check anything else?
         if (xpath != null)
         {
@@ -230,48 +174,48 @@ public class SimpleURL extends AbstractHtmlPageAction
      * 
      * @param page
      */
-    private void addPageToInterpreter(final HtmlPage page)
-    {
-        // take care of the parameters to fill up the interpreter
-        final List<String> xpathGetters = csvAction.getXPathGetterList(testCase);
-        final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
-        for (int i = 0; i < xpathGetters.size(); i++)
-        {
-            final String xp = xpathGetters.get(i);
-
-            // nothing to do, skip and return empty result
-            if (xp == null)
-            {
-                xpathGettersResults.add(null);
-                continue;
-            }
-
-            // get the elements from the page
-            @SuppressWarnings("unchecked")
-            final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(xp);
-
-            if (!elements.isEmpty())
-            {
-                if (elements.size() > 1)
-                {
-                    // keep the entire list
-                    xpathGettersResults.add(elements);
-                }
-                else
-                {
-                    // keep only the elements
-                    xpathGettersResults.add(elements.get(0));
-                }
-            }
-            else
-            {
-                xpathGettersResults.add(null);
-            }
-
-        }
-        // send it back for spicing up the interpreter
-        csvAction.setXPathGetterResult(xpathGettersResults);
-    }
+    // private void addPageToInterpreter(final HtmlPage page)
+    // {
+    // // take care of the parameters to fill up the interpreter
+    // final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
+    // final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
+    // for (int i = 0; i < xpathGetters.size(); i++)
+    // {
+    // final String xp = xpathGetters.get(i);
+    //
+    // // nothing to do, skip and return empty result
+    // if (xp == null)
+    // {
+    // xpathGettersResults.add(null);
+    // continue;
+    // }
+    //
+    // // get the elements from the page
+    // @SuppressWarnings("unchecked")
+    // final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(xp);
+    //
+    // if (!elements.isEmpty())
+    // {
+    // if (elements.size() > 1)
+    // {
+    // // keep the entire list
+    // xpathGettersResults.add(elements);
+    // }
+    // else
+    // {
+    // // keep only the elements
+    // xpathGettersResults.add(elements.get(0));
+    // }
+    // }
+    // else
+    // {
+    // xpathGettersResults.add(null);
+    // }
+    //
+    // }
+    // // send it back for spicing up the interpreter
+    // urlAction.setXPathGetterResult(xpathGettersResults);
+    // }
 
     /**
      * Add an additional request to the current action.
