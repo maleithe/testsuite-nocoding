@@ -1,15 +1,29 @@
-Action:
+###Test1###
+- Action:
     Name: Homepage1
     Requests:
         URL: "https://www.xceptance.com/de/"
         Type: GET
         Encoded: false
-
----
-
-Action:
+- Action:
     Name: Homepage2
     Requests:
         URL: "https://www.xceptance.com/de/"
         Type: GET
-        Encoded: false       
+        Encoded: false
+        
+---
+
+###Test2###
+- Action:
+    Name: Homepage3
+    Requests:
+        URL: "https://www.xceptance.com/de/"
+        Type: GET
+        Encoded: false
+- Action:
+    Name: Homepage4
+    Requests:
+        URL: "https://www.xceptance.com/de/"
+        Type: GET
+        Encoded: false        
