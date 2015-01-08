@@ -48,6 +48,12 @@ public class URLAction
 
     public static final String TYPE_XHR_ACTION = "XA";
 
+    public static final String TYPE_ACTION_YAML_NOTATION = "Action";
+
+    public static final String TYPE_STATIC_YAML_NOTATION = "Static";
+
+    public static final String TYPE_XHR_ACTION_YAML_NOTATION = "XHR";
+
     public static final String NAME = "Name";
 
     public static final String URL = "URL";
@@ -131,8 +137,8 @@ public class URLAction
      * @throws UnsupportedEncodingException
      * @throws MalformedURLException
      */
-    
-    public URLAction(final CSVRecord record, final Map<String, ?> yamlRecord, final ParamInterpreter interpreter)
+
+    public URLAction(final CSVRecord record, final Map<String, Object> yamlRecord, final ParamInterpreter interpreter)
         throws UnsupportedEncodingException, MalformedURLException
     {
         // check if using YAML or CSV
@@ -142,29 +148,38 @@ public class URLAction
         {
             // no bean shell, so we do not do anything, satisfy final here
             this.interpreter = interpreter;
-
-            // TODO extend for S and XHR
-            // check the type
+            
+            //TODO extend for S and XR
+            
             final String _type;
-            if (yamlRecord.containsKey("Action"))
+            if (yamlRecord instanceof Map && yamlRecord != null)
             {
-                _type = TYPE_ACTION;
+                // check the type
+                if (yamlRecord.containsKey(TYPE_ACTION_YAML_NOTATION))
+                {
+                    this.type = TYPE_ACTION;
+                    //final Map<String, Object> yamlAction = (Map<String, Object>) yamlRecord.get(TYPE_ACTION_YAML_NOTATION);
+                }
+                else
+                {
+                    XltLogger.runTimeLogger.warn("Unknown type for YAML, defaulting to 'Action'");
+                    this.type = TYPE_ACTION;
+                }
             }
             else
             {
-                // set default type
-                _type = TYPE_ACTION;
+                this.type = null;
             }
-            this.type = _type;
-
-            final Map<String, ?> yamlAction = (Map<String, ?>) yamlRecord.get("Action");
+            
+            //TODO extend for S and XR
+            final Map<String, Object> yamlAction = (Map<String, Object>) yamlRecord.get(TYPE_ACTION_YAML_NOTATION);
 
             // TODO autonaming if no Name is available
             this.name = yamlAction.get(NAME).toString();
 
             // we need at least an url, stop here of not given
             final Map<String, ?> yamlRequest = (Map<String, ?>) yamlAction.get("Requests");
-            this.urlString = ((Map <String, ?>) yamlRequest).get(URL).toString();
+            this.urlString = ((Map<String, ?>) yamlRequest).get(URL).toString();
             // TODO IllegalArgumentException if urlString is null
 
             this.url = interpreter == null ? new URL(this.urlString) : null;
@@ -179,7 +194,7 @@ public class URLAction
             this.encoded = _encoded.contains("true") ? true : false;
 
             final Map<String, ?> yamlParams = (Map<String, ?>) ((Map<String, ?>) yamlRequest).get(PARAMETERS);
-            this.parameters = !(yamlParams == null) && !yamlParams.isEmpty() ? setupYAMLParameters(yamlParams) : null; 
+            this.parameters = !(yamlParams == null) && !yamlParams.isEmpty() ? setupYAMLParameters(yamlParams) : null;
         }
         else
         {
@@ -313,7 +328,7 @@ public class URLAction
 
         return list;
     }
-    
+
     /**
      * Takes the map of parameters and turns it into name value pairs for later usage.
      * 
@@ -325,8 +340,8 @@ public class URLAction
     private List<NameValuePair> setupYAMLParameters(final Map<String, ?> parameters)
     {
         final List<NameValuePair> list = new ArrayList<NameValuePair>();
-        
-        for(final String parameterKey : parameters.keySet())
+
+        for (final String parameterKey : parameters.keySet())
         {
             list.add(new NameValuePair(parameterKey.toString(), parameters.get(parameterKey).toString()));
         }
@@ -401,7 +416,7 @@ public class URLAction
     {
         return interpreter;
     }
-    
+
     public List<NameValuePair> getParameters(final AbstractURLTestCase testCase)
     {
         // process bean shell part

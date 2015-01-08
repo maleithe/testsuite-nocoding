@@ -22,8 +22,8 @@
             cgid: "123-181"
 
 - Action:
-    Name: XC-Homepage
+    Name: Homepage
     Requests:
         URL: "https://www.xceptance.com/de/"
         Type: GET
-        Encoded: false     
+        Encoded: false
