@@ -110,6 +110,8 @@ public class AbstractURLTestCase extends AbstractTestCase
                 final List<?> yamlRecordList = (List<?>) yamlRecord;
                 for (int yamlCounter = 0; yamlCounter < yamlRecordList.size(); yamlCounter++)
                 {
+                    //FIXME just displayed for testing purpose
+                    System.out.println(yamlRecordList.get(yamlCounter));
                     urlActions.add(new URLAction(null, (Map) yamlRecordList.get(yamlCounter), interpreter));
                 }
             }

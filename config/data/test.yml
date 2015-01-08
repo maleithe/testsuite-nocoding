@@ -5,14 +5,24 @@
 ####################################
 
 - Action:
-    Name: Homepage1
+
+    # the name for the action
+    Name: Poster-Homepage
+    
+    # the request details
     Requests:
-        URL: "https://www.xceptance.com/de/"
-        Type: GET
+        URL: "${host}/posters/"
+        Type: GET   # GET and POST for now only
         Encoded: false
+        
+        # the params for the request as key value pairs
+        # this is a list, hence ordering applies
+        Parameters:
+            aValue: ${RANDOM.Number(10)}
+            cgid: "123-181"
 
 - Action:
-    Name: Homepage2
+    Name: XC-Homepage
     Requests:
         URL: "https://www.xceptance.com/de/"
         Type: GET

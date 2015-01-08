@@ -96,7 +96,7 @@ public class URLAction
 
     private final String method;
 
-    // private final List<NameValuePair> parameters;
+    private final List<NameValuePair> parameters;
 
     // private final HttpResponseCodeValidator httpResponseCodeValidator;
 
@@ -131,7 +131,8 @@ public class URLAction
      * @throws UnsupportedEncodingException
      * @throws MalformedURLException
      */
-    public URLAction(final CSVRecord record, final Map yamlRecord, final ParamInterpreter interpreter)
+    
+    public URLAction(final CSVRecord record, final Map<String, ?> yamlRecord, final ParamInterpreter interpreter)
         throws UnsupportedEncodingException, MalformedURLException
     {
         // check if using YAML or CSV
@@ -141,8 +142,8 @@ public class URLAction
         {
             // no bean shell, so we do not do anything, satisfy final here
             this.interpreter = interpreter;
-            
-            // TODO extend the types and build a fall back
+
+            // TODO extend for S and XHR
             // check the type
             final String _type;
             if (yamlRecord.containsKey("Action"))
@@ -151,19 +152,19 @@ public class URLAction
             }
             else
             {
-                // FIXME not a fallback
+                // set default type
                 _type = TYPE_ACTION;
             }
             this.type = _type;
 
-            final Object yamlAction = yamlRecord.get("Action");
+            final Map<String, ?> yamlAction = (Map<String, ?>) yamlRecord.get("Action");
 
             // TODO autonaming if no Name is available
-            this.name = ((Map) yamlAction).get(NAME).toString();
+            this.name = yamlAction.get(NAME).toString();
 
             // we need at least an url, stop here of not given
-            final Object yamlRequest = ((Map) yamlAction).get("Requests");
-            this.urlString = ((Map) yamlRequest).get(URL).toString();
+            final Map<String, ?> yamlRequest = (Map<String, ?>) yamlAction.get("Requests");
+            this.urlString = ((Map <String, ?>) yamlRequest).get(URL).toString();
             // TODO IllegalArgumentException if urlString is null
 
             this.url = interpreter == null ? new URL(this.urlString) : null;
@@ -171,19 +172,14 @@ public class URLAction
             // TODO extend the methods (GET or POST) and build a fall back if no method
             // check the method
             final String _method;
-            _method = ((Map) yamlRequest).get("Type").toString();
+            _method = ((Map<String, ?>) yamlRequest).get("Type").toString();
             this.method = _method.contains(GET) ? GET : POST;
 
-            final String _encoded = ((Map) yamlRequest).get(ENCODED).toString();
+            final String _encoded = ((Map<String, ?>) yamlRequest).get(ENCODED).toString();
             this.encoded = _encoded.contains("true") ? true : false;
 
-            // System.out.println(interpreter);
-            // System.out.println(name);
-            // System.out.println(type);
-            // System.out.println(urlString);
-            // System.out.println(url);
-            // System.out.println(method);
-            // System.out.println(encoded);
+            final Map<String, ?> yamlParams = (Map<String, ?>) ((Map<String, ?>) yamlRequest).get(PARAMETERS);
+            this.parameters = !(yamlParams == null) && !yamlParams.isEmpty() ? setupYAMLParameters(yamlParams) : null; 
         }
         else
         {
@@ -257,11 +253,10 @@ public class URLAction
             // + i)
             // : null);
             // }
-            //
-            // // ok, this is the tricky part
-            // this.parameters = StringUtils.isNotBlank(record.get(PARAMETERS)) ?
-            // setupParameters(record.get(PARAMETERS))
-            // : null;
+
+            // ok, this is the tricky part
+            this.parameters = StringUtils.isNotBlank(record.get(PARAMETERS)) ? setupCSVParameters(record.get(PARAMETERS))
+                                                                            : null;
         }
 
     }
@@ -274,7 +269,7 @@ public class URLAction
      * @return a list with parsed key value pairs
      * @throws UnsupportedEncodingException
      */
-    private List<NameValuePair> setupParameters(final String parameters) throws UnsupportedEncodingException
+    private List<NameValuePair> setupCSVParameters(final String parameters) throws UnsupportedEncodingException
     {
         final List<NameValuePair> list = new ArrayList<NameValuePair>();
 
@@ -318,6 +313,26 @@ public class URLAction
 
         return list;
     }
+    
+    /**
+     * Takes the map of parameters and turns it into name value pairs for later usage.
+     * 
+     * @param paramers
+     *            the yaml definition string of parameters
+     * @return a list with parsed key value pairs
+     * @throws UnsupportedEncodingException
+     */
+    private List<NameValuePair> setupYAMLParameters(final Map<String, ?> parameters)
+    {
+        final List<NameValuePair> list = new ArrayList<NameValuePair>();
+        
+        for(final String parameterKey : parameters.keySet())
+        {
+            list.add(new NameValuePair(parameterKey.toString(), parameters.get(parameterKey).toString()));
+        }
+
+        return list;
+    }
 
     /**
      * Returns true if this is an action to be executed
@@ -328,7 +343,7 @@ public class URLAction
     {
         return type.equals(TYPE_ACTION);
     }
-    
+
     /**
      * Returns true of header field is value, false otherwise.
      * 
@@ -340,7 +355,7 @@ public class URLAction
     {
         return PERMITTEDHEADERFIELDS.contains(fieldName);
     }
-    
+
     /**
      * Returns the name of this line.
      * 
@@ -350,33 +365,33 @@ public class URLAction
     {
         return interpreter != null ? interpreter.processDynamicData(testCase, name) : name;
     }
-    
-  /**
-  * Returns the url of that action. Is required.
-  * 
-  * @param testCase
-  *            for the correct data resulution
-  * @return the url with data resolution
-  * @throws MalformedURLException
-  */
- public URL getURL(final AbstractURLTestCase testCase) throws MalformedURLException
- {
-     // process bean shell part
-     return interpreter != null ? new URL(interpreter.processDynamicData(testCase, urlString)) : url;
- }
- 
- public HttpMethod getMethod()
- {
-     if (this.method.equals(POST))
-     {
-         return HttpMethod.POST;
-     }
-     else
-     {
-         return HttpMethod.GET;
-     }
- }
- 
+
+    /**
+     * Returns the url of that action. Is required.
+     * 
+     * @param testCase
+     *            for the correct data resulution
+     * @return the url with data resolution
+     * @throws MalformedURLException
+     */
+    public URL getURL(final AbstractURLTestCase testCase) throws MalformedURLException
+    {
+        // process bean shell part
+        return interpreter != null ? new URL(interpreter.processDynamicData(testCase, urlString)) : url;
+    }
+
+    public HttpMethod getMethod()
+    {
+        if (this.method.equals(POST))
+        {
+            return HttpMethod.POST;
+        }
+        else
+        {
+            return HttpMethod.GET;
+        }
+    }
+
     /**
      * Returns the active interpreter. Important for testing.
      * 
@@ -385,5 +400,31 @@ public class URLAction
     public ParamInterpreter getInterpreter()
     {
         return interpreter;
+    }
+    
+    public List<NameValuePair> getParameters(final AbstractURLTestCase testCase)
+    {
+        // process bean shell part
+        if (interpreter != null && parameters != null)
+        {
+            // create new list
+            final List<NameValuePair> result = new ArrayList<NameValuePair>(parameters.size());
+
+            // process all
+            for (final NameValuePair pair : parameters)
+            {
+                final String name = interpreter.processDynamicData(testCase, pair.getName());
+                String value = pair.getValue();
+                value = value != null ? interpreter.processDynamicData(testCase, value) : value;
+
+                result.add(new NameValuePair(name, value));
+            }
+
+            return result;
+        }
+        else
+        {
+            return parameters;
+        }
     }
 }
