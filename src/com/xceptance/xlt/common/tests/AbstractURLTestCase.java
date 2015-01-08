@@ -54,7 +54,7 @@ public class AbstractURLTestCase extends AbstractTestCase
      * Our data from CSV or YAML. This also guards it.
      */
     protected final List<URLAction> urlActions = new ArrayList<URLAction>();
-    
+
     /**
      * Our interpreter engine for that test case
      */
@@ -82,7 +82,7 @@ public class AbstractURLTestCase extends AbstractTestCase
         password = getProperty("password", getProperty("com.xceptance.xlt.auth.password"));
 
         final boolean useYaml = XltProperties.getInstance().getProperty("useYAML", false);
-        
+
         // load the data. Ideally we would offload the file searching to
         // XltProperties.getDataFile(String name)
         // or XltProperties.getDataFile(String name, String locale)
@@ -90,36 +90,43 @@ public class AbstractURLTestCase extends AbstractTestCase
         final String dataDirectory = XltProperties.getInstance().getProperty(XltConstants.XLT_PACKAGE_PATH
                                                                                  + ".data.directory",
                                                                              "config" + File.separatorChar + "data");
-        
+
         if (useYaml == true)
         {
-            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".yml"));
-            
-            //TODO
+            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName()
+                                                                              + ".yml"));
+
+            // TODO
             // before reading the yaml file replace all \t with 4 times \s
-            
-            //TODO
-            //read from yaml file
-            
-            
-            final InputStream input = new FileInputStream(file); 
+
+
+            final InputStream input = new FileInputStream(file);
             final Yaml yaml = new Yaml();
-            for(final Object yamlRecord : yaml.loadAll(input))
+            for (final Object yamlRecord : yaml.loadAll(input))
             {
-                // take it
-                final List<?> yamlRecordList = (List<?>) yamlRecord;
-                for (int yamlCounter = 0; yamlCounter < yamlRecordList.size(); yamlCounter++)
+                // check type before casting
+                if (yamlRecord instanceof List<?> && yamlRecord != null)
                 {
-                    //FIXME just displayed for testing purpose
-                    System.out.println(yamlRecordList.get(yamlCounter));
-                    urlActions.add(new URLAction(null, (Map) yamlRecordList.get(yamlCounter), interpreter));
+                    // take it
+                    final List<?> yamlRecordList = (List<?>) yamlRecord;
+                    for (int yamlCounter = 0; yamlCounter < yamlRecordList.size(); yamlCounter++)
+                    {
+                        // FIXME just displayed for testing purpose
+                        System.out.println(yamlRecordList.get(yamlCounter));
+                        // check type final before casting
+                        if (yamlRecordList.get(yamlCounter) instanceof Map && yamlRecordList.get(yamlCounter) != null)
+                        {
+                            urlActions.add(new URLAction(null, (Map) yamlRecordList.get(yamlCounter), interpreter));
+                        }
+                    }
                 }
             }
-            
+
         }
         else
         {
-            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName() + ".csv"));
+            final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName()
+                                                                              + ".csv"));
 
             BufferedReader br = null;
             boolean incorrectLines = false;
@@ -129,8 +136,9 @@ public class AbstractURLTestCase extends AbstractTestCase
                 br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 
                 // permit # as comment, empty lines, set comma as separator, and activate the header
-                final CSVFormat csvFormat = CSVFormat.RFC4180.toBuilder().withIgnoreEmptyLines(true).withCommentStart('#')
-                                                             .withHeader().withIgnoreSurroundingSpaces(true).build();
+                final CSVFormat csvFormat = CSVFormat.RFC4180.toBuilder().withIgnoreEmptyLines(true)
+                                                             .withCommentStart('#').withHeader()
+                                                             .withIgnoreSurroundingSpaces(true).build();
                 final CSVParser parser = new CSVParser(br, csvFormat);
                 final Iterator<CSVRecord> csvRecords = parser.iterator();
 
