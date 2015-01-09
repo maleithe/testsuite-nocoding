@@ -17,9 +17,9 @@
         
         # the params for the request as key value pairs
         # this is a list, hence ordering applies
-        Parameters:
-            aValue: ${RANDOM.Number(10)}
-            cgid: "123-181"
+        #Parameters:
+            #aValue: ${RANDOM.Number(10)}
+            #cgid: "123-181"
 
 - Action:
     Name: Homepage
