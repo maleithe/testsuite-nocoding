@@ -110,9 +110,7 @@ public class SimpleURL extends AbstractHtmlPageAction
         // set the user agent UID if required
         UserAgentUtils.setUserAgentUID(this.getWebClient(), testCase.getProperty("userAgent.UID", false));
 
-        //loadPage(urlAction.getURL(testCase), urlAction.getMethod(), urlAction.getParameters(testCase));
-        // TODO only for testing purpose without parameters
-        loadPage(urlAction.getURL(testCase), urlAction.getMethod(), null);
+        loadPage(urlAction.getURL(testCase), urlAction.getMethod(), urlAction.getParameters(testCase));
         
         // make element Look Up and add to interpreter
         final HtmlPage page = getHtmlPage();

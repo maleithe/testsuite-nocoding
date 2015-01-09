@@ -97,7 +97,7 @@ public class URLAction
 
     private final String method;
 
-    // private final List<NameValuePair> parameters;
+    private final List<NameValuePair> parameters;
 
     // private final HttpResponseCodeValidator httpResponseCodeValidator;
 
@@ -153,47 +153,9 @@ public class URLAction
             this.url = yamlAction.getYAMLRequest().getURL();
             this.method = yamlAction.getYAMLRequest().getMethod();
             this.encoded = yamlAction.getYAMLRequest().getEncoded();
-
-            // final String _type;
-            // if (yamlRecord instanceof Map && yamlRecord != null)
-            // {
-            // // check the type
-            // if (yamlRecord.containsKey(TYPE_ACTION_YAML_NOTATION))
-            // {
-            // this.type = TYPE_ACTION;
-            // }
-            // else
-            // {
-            // XltLogger.runTimeLogger.warn("Unknown type for YAML, defaulting to 'Action'");
-            // this.type = TYPE_ACTION;
-            // }
-            // }
-            // else
-            // {
-            // this.type = null;
-            // }
-
-            // TODO extend for S and XR
-            // final Map<String, Object> yamlAction = (Map<String, Object>) yamlRecord.get(TYPE_ACTION_YAML_NOTATION);
-
-            // TODO autonaming if no Name is available
-            // this.name = yamlAction.get(NAME).toString();
-
-            // we need at least an url, stop here of not given
-            // final Map<String, ?> yamlRequest = (Map<String, ?>) yamlAction.get("Requests");
-            // this.urlString = ((Map<String, ?>) yamlRequest).get(URL).toString();
-            // TODO IllegalArgumentException if urlString is null
-
-            // this.url = interpreter == null ? new URL(this.urlString) : null;
-
-            // TODO extend the methods (GET or POST) and build a fall back if no method
-            // check the method
-            // final String _method;
-            // _method = ((Map<String, ?>) yamlRequest).get("Type").toString();
-            // this.method = _method.contains(GET) ? GET : POST;
-
-            // final String _encoded = ((Map<String, ?>) yamlRequest).get(ENCODED).toString();
-            // this.encoded = _encoded.contains("true") ? true : false;
+            this.parameters = yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList();
+            
+            System.out.println(yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList());
 
             // final Map<String, ?> yamlParams = (Map<String, ?>) ((Map<String, ?>) yamlRequest).get(PARAMETERS);
             // this.parameters = !(yamlParams == null) && !yamlParams.isEmpty() ? setupYAMLParameters(yamlParams) :
@@ -211,6 +173,7 @@ public class URLAction
             this.url = null;
             this.method = null;
             this.encoded = false;
+            this.parameters = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));

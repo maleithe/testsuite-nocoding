@@ -9,6 +9,22 @@ import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
 public class YAMLRequest
 {
+    public static final String REQUEST = "Requests";
+    
+    public static final String URL = "Url";
+    
+    public static final String GET = "GET";
+
+    public static final String POST = "POST";
+
+    public static final String TYPE = "Type";
+    
+    public static final String ENCODED = "Encoded";
+    
+    public static final String TRUE = "true";
+    
+    public static final String PARAMETERS = "Parameters";
+    
     private final URL url;
 
     private final String urlString;
@@ -17,15 +33,17 @@ public class YAMLRequest
     
     private final boolean encoded;
     
+    private final YAMLRequestParams yamlRequestParams;
+    
     public YAMLRequest(final Map<String, Object> yamlAction, final ParamInterpreter interpreter) throws MalformedURLException
     {
         if(yamlAction instanceof Map && yamlAction != null)
         {
-            final Map<String, ?> yamlRequest = (Map<String, ?>) yamlAction.get("Requests");
+            final Map<String, Object> yamlRequest = (Map<String, Object>) yamlAction.get(REQUEST);
             
-            if(yamlRequest.containsKey("URL"))
+            if(yamlRequest.containsKey(URL))
             {
-                this.urlString = yamlRequest.get("URL").toString();
+                this.urlString = yamlRequest.get(URL).toString();
                 this.url = interpreter == null ? new URL(this.urlString) : null;
             }
             else
@@ -35,10 +53,10 @@ public class YAMLRequest
             }
             
             final String _method;
-            if(yamlRequest.containsKey("Type"))
+            if(yamlRequest.containsKey(TYPE))
             {
-                _method = yamlRequest.get("Type").toString();
-                this.method = _method.equals("GET") ? "GET" : "POST";
+                _method = yamlRequest.get(TYPE).toString();
+                this.method = _method.equals(GET) ? GET : POST;
             }
             else
             {
@@ -46,14 +64,23 @@ public class YAMLRequest
             }
             
             final String _encoded;
-            if(yamlRequest.containsKey("Encoded"))
+            if(yamlRequest.containsKey(ENCODED))
             {
-                _encoded = yamlRequest.get("Encoded").toString();
-                this.encoded = _encoded.contains("true") ? true : false;
+                _encoded = yamlRequest.get(ENCODED).toString();
+                this.encoded = _encoded.contains(TRUE) ? true : false;
             }
             else
             {
                 this.encoded = false;
+            }
+            
+            if(yamlRequest.containsKey(PARAMETERS))
+            {
+                this.yamlRequestParams = new YAMLRequestParams(yamlRequest);
+            }
+            else
+            {
+                this.yamlRequestParams = null;
             }
         }
         else
@@ -62,6 +89,7 @@ public class YAMLRequest
             this.url = null;
             this.method = null;
             this.encoded = false;
+            this.yamlRequestParams = null;
         }
     }
     
@@ -83,5 +111,10 @@ public class YAMLRequest
     public boolean getEncoded()
     {
         return this.encoded;
+    }
+    
+    public YAMLRequestParams getYAMLRequestParams()
+    {
+        return this.yamlRequestParams;
     }
 }
