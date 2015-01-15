@@ -15,23 +15,16 @@ public class YAMLRequestParams
 
     
     public YAMLRequestParams(final Map<String, Object> yamlRequest)
-    {
-        //System.out.println(yamlRequest.get(PARAMETERS));
-        
+    {       
         if (yamlRequest.get(PARAMETERS) instanceof ArrayList && yamlRequest.get(PARAMETERS) != null)
         {
-            final ArrayList _yamlParams = (ArrayList) yamlRequest.get(PARAMETERS);
-            
-            System.out.println(_yamlParams);
-            
-            this.paramList = !(_yamlParams == null) && !_yamlParams.isEmpty() ? setupYAMLParameters(_yamlParams) : null;
+            final ArrayList _yamlParams = (ArrayList) yamlRequest.get(PARAMETERS);            
+            this.paramList = setupYAMLParameters(_yamlParams);
         }
         else
         {
             this.paramList = null;
         }
-        
-        //System.out.println(paramList);
     }
     
     /**
@@ -42,17 +35,19 @@ public class YAMLRequestParams
      * @return a list with parsed key value pairs
      * @throws UnsupportedEncodingException
      */
-    private List<NameValuePair> setupYAMLParameters(final ArrayList parameters)
+    private List<NameValuePair> setupYAMLParameters(final List parameters)
     {
         final List<NameValuePair> list = new ArrayList<NameValuePair>();
-
-        System.out.println(parameters);
         
-//        for (final String parameterKey : parameters.keySet())
-//        {
-//            list.add(new NameValuePair(parameterKey.toString(), parameters.get(parameterKey).toString()));
-//        }
-
+        for (final Object object : parameters)
+        {
+            final Map<String, String> map = (Map<String, String>) object;
+            for (final String key : map.keySet())
+            {
+                list.add(new NameValuePair(key.toString(), map.get(key).toString()));
+            }   
+        }
+         
         return list;
     }
     

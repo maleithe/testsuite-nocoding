@@ -147,19 +147,14 @@ public class URLAction
 
             final YAMLAction yamlAction = new YAMLAction(yamlRecord, interpreter);
 
+            //TODO check if the specific fields exist eg. name,request, etc.
             this.type = yamlAction.getType();
             this.name = yamlAction.getYAMLName();
             this.urlString = yamlAction.getYAMLRequest().getURLString();
             this.url = yamlAction.getYAMLRequest().getURL();
             this.method = yamlAction.getYAMLRequest().getMethod();
             this.encoded = yamlAction.getYAMLRequest().getEncoded();
-            this.parameters = yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList();
-            
-            System.out.println(yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList());
-
-            // final Map<String, ?> yamlParams = (Map<String, ?>) ((Map<String, ?>) yamlRequest).get(PARAMETERS);
-            // this.parameters = !(yamlParams == null) && !yamlParams.isEmpty() ? setupYAMLParameters(yamlParams) :
-            // null;
+            this.parameters = yamlAction.getYAMLRequest().YAMLRequestParamsExist() ? yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList() : null;
         }
         else
         {
@@ -392,29 +387,29 @@ public class URLAction
         return interpreter;
     }
 
-    // public List<NameValuePair> getParameters(final AbstractURLTestCase testCase)
-    // {
-    // // process bean shell part
-    // if (interpreter != null && parameters != null)
-    // {
-    // // create new list
-    // final List<NameValuePair> result = new ArrayList<NameValuePair>(parameters.size());
-    //
-    // // process all
-    // for (final NameValuePair pair : parameters)
-    // {
-    // final String name = interpreter.processDynamicData(testCase, pair.getName());
-    // String value = pair.getValue();
-    // value = value != null ? interpreter.processDynamicData(testCase, value) : value;
-    //
-    // result.add(new NameValuePair(name, value));
-    // }
-    //
-    // return result;
-    // }
-    // else
-    // {
-    // return parameters;
-    // }
-    // }
+    public List<NameValuePair> getParameters(final AbstractURLTestCase testCase)
+    {
+        // process bean shell part
+        if (interpreter != null && parameters != null)
+        {
+            // create new list
+            final List<NameValuePair> result = new ArrayList<NameValuePair>(parameters.size());
+
+            // process all
+            for (final NameValuePair pair : parameters)
+            {
+                final String name = interpreter.processDynamicData(testCase, pair.getName());
+                String value = pair.getValue();
+                value = value != null ? interpreter.processDynamicData(testCase, value) : value;
+
+                result.add(new NameValuePair(name, value));
+            }
+
+            return result;
+        }
+        else
+        {
+            return parameters;
+        }
+    }
 }
