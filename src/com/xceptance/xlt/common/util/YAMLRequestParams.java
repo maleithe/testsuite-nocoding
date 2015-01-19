@@ -55,5 +55,4 @@ public class YAMLRequestParams
     {
         return this.paramList;
     }
-
 }

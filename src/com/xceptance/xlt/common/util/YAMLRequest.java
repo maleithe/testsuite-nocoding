@@ -118,8 +118,18 @@ public class YAMLRequest
         return this.yamlRequestParams;
     }
 
-    public boolean YAMLRequestParamsExist()
+    public boolean YAMLRequestParamsExists()
     {
         return this.yamlRequestParams != null ? true : false;
+    }
+    
+    public boolean YAMLUrlStringExists()
+    {
+        return this.urlString != null ? true : false;
+    }
+    
+    public boolean YAMLMethodExists()
+    {
+        return this.method != null ? true : false;
     }
 }

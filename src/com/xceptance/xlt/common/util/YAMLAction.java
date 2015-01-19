@@ -63,5 +63,20 @@ public class YAMLAction
     {
         return this.type;
     }
+    
+    public boolean YAMLActionExists()
+    {
+        return this.type != null ? true : false;
+    }
+    
+    public boolean YAMLNameExists()
+    {
+        return this.name != null ? true : false;
+    }
+    
+    public boolean YAMLRequestExists()
+    {
+        return this.yamlRequest != null ? true : false;
+    }
 
 }

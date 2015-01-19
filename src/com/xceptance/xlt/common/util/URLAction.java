@@ -13,6 +13,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
@@ -147,15 +148,77 @@ public class URLAction
 
             final YAMLAction yamlAction = new YAMLAction(yamlRecord, interpreter);
 
-            //TODO check if the specific fields exist eg. name,request, etc.
-            this.type = yamlAction.getType();
-            this.name = yamlAction.getYAMLName();
-            this.urlString = yamlAction.getYAMLRequest().getURLString();
-            this.url = yamlAction.getYAMLRequest().getURL();
-            this.method = yamlAction.getYAMLRequest().getMethod();
+            // get the action type
+            String _type;
+            if (yamlAction.YAMLActionExists())
+            {
+                _type = yamlAction.getType();
+            }
+            else
+            {
+                XltLogger.runTimeLogger.warn("No Action Type available");
+                _type = null;
+            }
+            this.type = _type;
+
+            // get the action name
+            String _name;
+            if (yamlAction.YAMLActionExists())
+            {
+                _name = yamlAction.getYAMLName();
+            }
+            else
+            {
+                XltLogger.runTimeLogger.warn("No Action Name available");
+                _name = null;
+            }
+            this.name = _name;
+
+            // get the action url
+            String _UrlString;
+            URL _Url;
+            if (yamlAction.YAMLRequestExists() && yamlAction.getYAMLRequest().YAMLUrlStringExists())
+            {
+                _UrlString = yamlAction.getYAMLRequest().getURLString();
+                _Url = yamlAction.getYAMLRequest().getURL();
+            }
+            else
+            {
+                XltLogger.runTimeLogger.warn("No Action URL available");
+                _UrlString = null;
+                _Url = null;
+            }
+            this.urlString = _UrlString;
+            this.url = _Url;
+
+            // get the Action Method
+            final String _method;
+            if (yamlAction.YAMLRequestExists() && yamlAction.getYAMLRequest().YAMLMethodExists())
+            {
+                _method = yamlAction.getYAMLRequest().getMethod();
+            }
+            else
+            {
+                XltLogger.runTimeLogger.warn("No Action Method available");
+                _method = null;
+            }
+            this.method = _method;
+
+            // set Encoeded to false if nothing is set
             this.encoded = yamlAction.getYAMLRequest().getEncoded();
-            this.parameters = yamlAction.getYAMLRequest().YAMLRequestParamsExist() ? yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList() : null;
-        }
+            
+            // get the Action Params
+            final List<NameValuePair> _params;
+            if(yamlAction.YAMLRequestExists() && yamlAction.getYAMLRequest().YAMLRequestParamsExists())
+            {
+                _params = yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList();
+            }
+            else
+            {
+                _params = null;
+            }
+            this.parameters = _params;
+        }   
         else
         {
             // no bean shell, so we do not do anything, satisfy final here
