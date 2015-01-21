@@ -15,6 +15,7 @@ import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
+import com.xceptance.xlt.api.validators.HttpResponseCodeValidator;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
@@ -100,7 +101,7 @@ public class URLAction
 
     private final List<NameValuePair> parameters;
 
-    // private final HttpResponseCodeValidator httpResponseCodeValidator;
+    private final HttpResponseCodeValidator httpResponseCodeValidator;
 
     // private final String xPath;
 
@@ -206,10 +207,10 @@ public class URLAction
 
             // set Encoeded to false if nothing is set
             this.encoded = yamlAction.getYAMLRequest().getEncoded();
-            
+
             // get the Action Params
             final List<NameValuePair> _params;
-            if(yamlAction.YAMLRequestExists() && yamlAction.getYAMLRequest().YAMLRequestParamsExists())
+            if (yamlAction.YAMLRequestExists() && yamlAction.getYAMLRequest().YAMLRequestParamsExists())
             {
                 _params = yamlAction.getYAMLRequest().getYAMLRequestParams().getParamList();
             }
@@ -218,7 +219,13 @@ public class URLAction
                 _params = null;
             }
             this.parameters = _params;
-        }   
+
+            // get HttpResponseCode to validate the response
+            this.httpResponseCodeValidator = yamlAction.YAMLResponseExists() ? new HttpResponseCodeValidator(
+                                                                                                             yamlAction.getYAMLResponse()
+                                                                                                                       .getHttpResponseCode())
+                                                                            : HttpResponseCodeValidator.getInstance();
+        }
         else
         {
             // no bean shell, so we do not do anything, satisfy final here
@@ -232,6 +239,7 @@ public class URLAction
             this.method = null;
             this.encoded = false;
             this.parameters = null;
+            this.httpResponseCodeValidator = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -474,5 +482,10 @@ public class URLAction
         {
             return parameters;
         }
+    }
+
+    public HttpResponseCodeValidator getHttpResponseCodeValidator()
+    {
+        return httpResponseCodeValidator;
     }
 }

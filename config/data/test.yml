@@ -11,7 +11,7 @@
     Name: Poster-Homepage
     
     # the request details
-    Requests:
+    Request:
         Url: "${host}/posters/"
         Type: GET   # GET and POST for now only
         Encoded: false
@@ -22,9 +22,14 @@
             - aValue: ${RANDOM.Number(10)}
             - cgid: "123-181"
 
+    # the response validation
+    Response:
+        # expect these response code
+        Httpcode: 200
+
 - Action:
     Name: XC-Homepage
-    Requests:
+    Request:
         Url: "https://www.xceptance.com/de/"
         Type: GET
         Encoded: false

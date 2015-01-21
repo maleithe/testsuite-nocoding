@@ -8,7 +8,7 @@ import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
 public class YAMLRequest
 {
-    public static final String REQUEST = "Requests";
+    public static final String REQUEST = "Request";
 
     public static final String URL = "Url";
 

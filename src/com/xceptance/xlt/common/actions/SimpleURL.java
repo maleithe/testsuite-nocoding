@@ -130,7 +130,7 @@ public class SimpleURL extends AbstractHtmlPageAction
         final HtmlPage page = getHtmlPage();
 
         // response code correct?
-        // csvAction.getHttpResponseCodeValidator().validate(page);
+        urlAction.getHttpResponseCodeValidator().validate(page);
 
         // final String xpath = csvAction.getXPath(testCase);
         // final String text = csvAction.getText(testCase);

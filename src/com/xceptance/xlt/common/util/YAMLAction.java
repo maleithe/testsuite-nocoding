@@ -9,6 +9,10 @@ public class YAMLAction
 {
     public static final String NAME = "Name";
 
+    public static final String REQUEST = "Request";
+    
+    public static final String RESPONSE = "Response";
+
     public static final String TYPE_ACTION_YAML_NOTATION = "Action";
 
     public static final String TYPE_ACTION = "A";
@@ -18,6 +22,8 @@ public class YAMLAction
     private final YAMLRequest yamlRequest;
     
     private final String type;
+    
+    private final YAMLResponse yamlResponse;
     
     /**
      * encapsulate the whole YAML Action
@@ -46,13 +52,14 @@ public class YAMLAction
 
             //TODO autonaming
             this.name = yamlAction.containsKey(NAME) ? yamlAction.get(NAME).toString() : null;
-
-            this.yamlRequest = new YAMLRequest(yamlAction, interpreter);
+            this.yamlRequest = yamlAction.containsKey(REQUEST) ? new YAMLRequest(yamlAction, interpreter) : null;
+            this.yamlResponse = yamlAction.containsKey(RESPONSE) ? new YAMLResponse(yamlAction, interpreter) : null;
         }
         else
         {
             this.name = null;
             this.yamlRequest = null;
+            this.yamlResponse = null;
             this.type = null;
         }
 
@@ -66,6 +73,11 @@ public class YAMLAction
     public YAMLRequest getYAMLRequest()
     {
         return this.yamlRequest;
+    }
+    
+    public YAMLResponse getYAMLResponse()
+    {
+        return this.yamlResponse;
     }
     
     public String getType()
@@ -88,4 +100,8 @@ public class YAMLAction
         return this.yamlRequest != null;
     }
 
+    public boolean YAMLResponseExists()
+    {
+        return this.yamlResponse != null;
+    }
 }
