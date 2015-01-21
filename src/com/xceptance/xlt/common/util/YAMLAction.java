@@ -18,7 +18,16 @@ public class YAMLAction
     private final YAMLRequest yamlRequest;
     
     private final String type;
-
+    
+    /**
+     * encapsulate the whole YAML Action
+     * 
+     * @param yamlRecord
+     *            the record from YAML to process
+     * @param interpreter
+     *            the bean shell interpreter to use
+     * @throws MalformedURLException
+     */
     public YAMLAction(final Map<String, Object> yamlRecord, final ParamInterpreter interpreter) throws MalformedURLException
     {
         if (yamlRecord instanceof Map && yamlRecord != null)
@@ -66,17 +75,17 @@ public class YAMLAction
     
     public boolean YAMLActionExists()
     {
-        return this.type != null ? true : false;
+        return this.type != null;
     }
     
     public boolean YAMLNameExists()
     {
-        return this.name != null ? true : false;
+        return this.name != null;
     }
     
     public boolean YAMLRequestExists()
     {
-        return this.yamlRequest != null ? true : false;
+        return this.yamlRequest != null;
     }
 
 }

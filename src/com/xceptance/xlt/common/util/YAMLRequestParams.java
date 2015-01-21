@@ -13,7 +13,14 @@ public class YAMLRequestParams
     
     private final List<NameValuePair> paramList;
 
-    
+    /**
+     * encapsulate the YAML Parameter List
+     * 
+     * @param yamlRequest
+     *            the record from YAML to process
+     * @param interpreter
+     *            the bean shell interpreter to use
+     */    
     public YAMLRequestParams(final Map<String, Object> yamlRequest)
     {       
         if (yamlRequest.get(PARAMETERS) instanceof ArrayList && yamlRequest.get(PARAMETERS) != null)
@@ -30,7 +37,7 @@ public class YAMLRequestParams
     /**
      * Takes the map of parameters and turns it into name value pairs for later usage.
      * 
-     * @param paramers
+     * @param parameters
      *            the yaml definition string of parameters
      * @return a list with parsed key value pairs
      * @throws UnsupportedEncodingException

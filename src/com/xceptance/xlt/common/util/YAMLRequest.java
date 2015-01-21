@@ -33,7 +33,16 @@ public class YAMLRequest
     private final boolean encoded;
 
     private final YAMLRequestParams yamlRequestParams;
-
+    
+    /**
+     * encapsulate the YAML Request
+     * 
+     * @param yamlAction
+     *            the record from YAML to process
+     * @param interpreter
+     *            the bean shell interpreter to use
+     * @throws MalformedURLException
+     */
     public YAMLRequest(final Map<String, Object> yamlAction, final ParamInterpreter interpreter)
         throws MalformedURLException
     {
@@ -120,16 +129,16 @@ public class YAMLRequest
 
     public boolean YAMLRequestParamsExists()
     {
-        return this.yamlRequestParams != null ? true : false;
+        return this.yamlRequestParams != null;
     }
     
     public boolean YAMLUrlStringExists()
     {
-        return this.urlString != null ? true : false;
+        return this.urlString != null;
     }
     
     public boolean YAMLMethodExists()
     {
-        return this.method != null ? true : false;
+        return this.method != null;
     }
 }
