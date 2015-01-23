@@ -1,12 +1,11 @@
 ###########   Test1  ####################
 #
-# only one test per *.yml, *.yaml  !!!
+# only one test per *.yml or *.yaml  !!!
 #
 ####################################
 
 
 - Action:
-
     # the name for the action
     Name: Poster-Homepage
     
@@ -26,6 +25,31 @@
     Response:
         # expect these response code
         Httpcode: 200
+        
+        # verify
+        Validate:
+            # this is a list, hence the verification takes place in that order
+            # each verification step has a name to print it out when the step fails, 
+            # makes debugging easier
+            - Header:
+                # xpath only works for DOM mode
+                Xpath: id('titleIndex')
+                Matches: Foobar
+            #- MainElements:
+                # checks the count of elements
+                #Xpath: id('main')/div
+                #Count: 8
+            #- Cart:
+                # if nothing is specified, it just checks that the path exists
+                #Xpath: //div[@class='minicart']
+            #- Footer:
+                # regexp works for both modes
+                #Regex: F.*-Tool
+                #Matches: Foobar-Tool
+            #- End:
+                # compare against a capture group, only the first group is used
+                #Regex: <div class="foo">(.*)</div>
+                #Matches: TextinGroup
 
 - Action:
     Name: XC-Homepage

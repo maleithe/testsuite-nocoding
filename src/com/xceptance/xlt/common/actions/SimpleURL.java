@@ -111,7 +111,7 @@ public class SimpleURL extends AbstractHtmlPageAction
         UserAgentUtils.setUserAgentUID(this.getWebClient(), testCase.getProperty("userAgent.UID", false));
 
         loadPage(urlAction.getURL(testCase), urlAction.getMethod(), urlAction.getParameters(testCase));
-        
+
         // make element Look Up and add to interpreter
         final HtmlPage page = getHtmlPage();
         // addPageToInterpreter(page);
@@ -132,11 +132,8 @@ public class SimpleURL extends AbstractHtmlPageAction
         // response code correct?
         urlAction.getHttpResponseCodeValidator().validate(page);
 
-        // final String xpath = csvAction.getXPath(testCase);
-        // final String text = csvAction.getText(testCase);
-
-        final String xpath = null;
-        final String text = null;
+        final String xpath = urlAction.getXPath(testCase);
+        final String text = urlAction.getText(testCase);
 
         // check anything else?
         if (xpath != null)
@@ -167,53 +164,53 @@ public class SimpleURL extends AbstractHtmlPageAction
         }
     }
 
-    /**
-     * Make some data resolution before post validation which is necessary for executing the page load.
-     * 
-     * @param page
-     */
-    // private void addPageToInterpreter(final HtmlPage page)
-    // {
-    // // take care of the parameters to fill up the interpreter
-    // final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
-    // final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
-    // for (int i = 0; i < xpathGetters.size(); i++)
-    // {
-    // final String xp = xpathGetters.get(i);
-    //
-    // // nothing to do, skip and return empty result
-    // if (xp == null)
-    // {
-    // xpathGettersResults.add(null);
-    // continue;
-    // }
-    //
-    // // get the elements from the page
-    // @SuppressWarnings("unchecked")
-    // final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(xp);
-    //
-    // if (!elements.isEmpty())
-    // {
-    // if (elements.size() > 1)
-    // {
-    // // keep the entire list
-    // xpathGettersResults.add(elements);
-    // }
-    // else
-    // {
-    // // keep only the elements
-    // xpathGettersResults.add(elements.get(0));
-    // }
-    // }
-    // else
-    // {
-    // xpathGettersResults.add(null);
-    // }
-    //
-    // }
-    // // send it back for spicing up the interpreter
-    // urlAction.setXPathGetterResult(xpathGettersResults);
-    // }
+//    /**
+//     * Make some data resolution before post validation which is necessary for executing the page load.
+//     * 
+//     * @param page
+//     */
+//    private void addPageToInterpreter(final HtmlPage page)
+//    {
+//        // take care of the parameters to fill up the interpreter
+//        final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
+//        final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
+//        for (int i = 0; i < xpathGetters.size(); i++)
+//        {
+//            final String xp = xpathGetters.get(i);
+//
+//            // nothing to do, skip and return empty result
+//            if (xp == null)
+//            {
+//                xpathGettersResults.add(null);
+//                continue;
+//            }
+//
+//            // get the elements from the page
+//            @SuppressWarnings("unchecked")
+//            final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(xp);
+//
+//            if (!elements.isEmpty())
+//            {
+//                if (elements.size() > 1)
+//                {
+//                    // keep the entire list
+//                    xpathGettersResults.add(elements);
+//                }
+//                else
+//                {
+//                    // keep only the elements
+//                    xpathGettersResults.add(elements.get(0));
+//                }
+//            }
+//            else
+//            {
+//                xpathGettersResults.add(null);
+//            }
+//
+//        }
+//        // send it back for spicing up the interpreter
+//        urlAction.setXPathGetterResult(xpathGettersResults);
+//    }
 
     /**
      * Add an additional request to the current action.

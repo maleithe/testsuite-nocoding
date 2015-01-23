@@ -35,7 +35,7 @@ public class YAMLRequestParams
     }
     
     /**
-     * Takes the map of parameters and turns it into name value pairs for later usage.
+     * Takes the list of parameters and turns it into name value pairs for later usage.
      * 
      * @param parameters
      *            the yaml definition string of parameters

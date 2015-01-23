@@ -103,13 +103,13 @@ public class URLAction
 
     private final HttpResponseCodeValidator httpResponseCodeValidator;
 
-    // private final String xPath;
+    private final String xPath;
 
     // private final String regexpString;
 
     // private final Pattern regexp;
 
-    // private final String text;
+    private final String text;
 
     private final boolean encoded;
 
@@ -225,6 +225,22 @@ public class URLAction
                                                                                                              yamlAction.getYAMLResponse()
                                                                                                                        .getHttpResponseCode())
                                                                             : HttpResponseCodeValidator.getInstance();
+            
+            
+            final String _xpath;
+//            if(yamlAction.getYAMLResponse().YAMLResponseValidationExists())
+//            {
+//                _xpath = yamlAction.getYAMLResponse().getYAMLResponseValidation().YAMLResponseValidationListExists() ? yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(0) : null;
+//            }
+                                                                     
+            this.xPath = null;                                                                                                 
+            this.text = null;
+                                                                                                             
+            //TODO get the xpath
+            //TODO get the text
+                                                                                                             
+
+                                                                                                             
         }
         else
         {
@@ -240,6 +256,8 @@ public class URLAction
             this.encoded = false;
             this.parameters = null;
             this.httpResponseCodeValidator = null;
+            this.xPath = null;
+            this.text = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -488,4 +506,27 @@ public class URLAction
     {
         return httpResponseCodeValidator;
     }
+
+    public String getXPath(final AbstractURLTestCase testCase)
+    {
+        // process bean shell part
+        return interpreter != null ? interpreter.processDynamicData(testCase, xPath) : xPath;
+    }
+
+    public String getXPath()
+    {
+        return getXPath(null);
+    }
+    
+    public String getText(final AbstractURLTestCase testCase)
+    {
+        // process bean shell part
+        return interpreter != null ? interpreter.processDynamicData(testCase, text) : text;
+    }
+
+    public String getText()
+    {
+        return getText(null);
+    }
+
 }
