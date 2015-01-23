@@ -5,15 +5,18 @@ import java.util.Map;
 
 import com.xceptance.xlt.common.util.bsh.ParamInterpreter;
 
-
 public class YAMLResponse
 {
     public static final String RESPONSE = "Response";
-    
+
     public static final String HTTPRESPONSECODE = "Httpcode";
     
-    public final int httpResponseCode;
+    public static final String RESPONSEVALIDATE = "Validate";
+
+    private final int httpResponseCode;
     
+    private final YAMLResponseValidation yamlResponseValidation;
+
     /**
      * encapsulate the YAML Response
      * 
@@ -36,20 +39,40 @@ public class YAMLResponse
             }
             else
             {
-             // set 200 as default
+                // set 200 as default
                 this.httpResponseCode = 200;
+            }
+            
+            if (yamlResponse.containsKey(RESPONSEVALIDATE))
+            {
+                this.yamlResponseValidation = new YAMLResponseValidation(yamlResponse);
+            }
+            else
+            {
+                this.yamlResponseValidation = null;
             }
         }
         else
         {
             // set 200 as default
             this.httpResponseCode = 200;
+            this.yamlResponseValidation = null;
         }
     }
-    
+
     public int getHttpResponseCode()
     {
         return this.httpResponseCode;
+    }
+    
+    public YAMLResponseValidation getYAMLResponseValidation()
+    {
+        return this.yamlResponseValidation;
+    }
+    
+    public boolean YAMLResponseValidationExists()
+    {
+        return this.yamlResponseValidation != null;
     }
 
 }
