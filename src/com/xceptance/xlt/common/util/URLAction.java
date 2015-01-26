@@ -225,14 +225,12 @@ public class URLAction
                                                                                                              yamlAction.getYAMLResponse()
                                                                                                                        .getHttpResponseCode())
                                                                             : HttpResponseCodeValidator.getInstance();
-            
-            
-            final String _xpath;
-//            if(yamlAction.getYAMLResponse().YAMLResponseValidationExists())
-//            {
-//                _xpath = yamlAction.getYAMLResponse().getYAMLResponseValidation().YAMLResponseValidationListExists() ? yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(0) : null;
-//            }
-                                                                     
+       
+       
+            System.out.println(yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(0).getValidatorName());
+            System.out.println(yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(1).getValidatorName());
+                                                                                                             
+            // get the xpath for the validation                                                                                                 
             this.xPath = null;                                                                                                 
             this.text = null;
                                                                                                              

@@ -1,24 +1,53 @@
 package com.xceptance.xlt.common.util;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 public class YAMLValidator
 {
+    private final String name;
+
     private final String xpath;
-    
-    private final String matcher;
-    
+
+    private final String text;
+
     /**
-     * encapsulate a YAML Validator
+     * encapsulate the YAML Validator
      * 
-     * @param yamlValidationList
+     * @param yamlResponse
      *            the record from YAML to process
-     * @return yamlValidator
-     *            the validator to be checked, contains of xpath and matcher
-     */    
-    public YAMLValidator(final ArrayList yamlValidationList)
-    {       
-        this.xpath = null;
-        this.matcher = null;
+     */
+    public YAMLValidator(final Object validator)
+    {
+        final Map<String, Object> _validator = (Map) validator;
+        String _name = null;
+
+        // get the name of the validation
+        for (final String key : _validator.keySet())
+        {
+            _name = key.toString();
+        }
+        this.name = _name;
+
+        // get the xpath if available
+        this.xpath = ((Map) _validator.get(this.name)).containsKey("Xpath") ? (String) ((Map) _validator.get(this.name)).get("Xpath")
+                                                                           : null;
+        // get the text for matching if available
+        this.text = ((Map) _validator.get(this.name)).containsKey("Matches") ? (String) ((Map) _validator.get(this.name)).get("Matches")
+                                                                            : null;
+    }
+    
+    public String getValidatorName()
+    {
+        return this.name;
+    }
+    
+    public String getValidatorXpath()
+    {
+        return this.xpath;
+    }
+    
+    public String getValidatorText()
+    {
+        return this.text;
     }
 }

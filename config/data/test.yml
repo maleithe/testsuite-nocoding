@@ -34,14 +34,14 @@
             - Header:
                 # xpath only works for DOM mode
                 Xpath: id('titleIndex')
-                Matches: Foobar
-            #- MainElements:
+                Matches: Check out our new panorama posters!
+            - MainElements:
                 # checks the count of elements
-                #Xpath: id('main')/div
-                #Count: 8
-            #- Cart:
+                Xpath: id('main')/div
+                Count: 8
+            - Cart:
                 # if nothing is specified, it just checks that the path exists
-                #Xpath: //div[@class='minicart']
+                Xpath: //div[@class='minicart']
             #- Footer:
                 # regexp works for both modes
                 #Regex: F.*-Tool
