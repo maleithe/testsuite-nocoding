@@ -4,6 +4,10 @@ import java.util.Map;
 
 public class YAMLValidator
 {
+    public static final String XPATH = "Xpath";
+    
+    public static final String MATCHES = "Matches";
+    
     private final String name;
 
     private final String xpath;
@@ -29,10 +33,10 @@ public class YAMLValidator
         this.name = _name;
 
         // get the xpath if available
-        this.xpath = ((Map) _validator.get(this.name)).containsKey("Xpath") ? (String) ((Map) _validator.get(this.name)).get("Xpath")
+        this.xpath = ((Map) _validator.get(this.name)).containsKey(XPATH) ? (String) ((Map) _validator.get(this.name)).get(XPATH)
                                                                            : null;
         // get the text for matching if available
-        this.text = ((Map) _validator.get(this.name)).containsKey("Matches") ? (String) ((Map) _validator.get(this.name)).get("Matches")
+        this.text = ((Map) _validator.get(this.name)).containsKey(MATCHES) ? (String) ((Map) _validator.get(this.name)).get(MATCHES)
                                                                             : null;
     }
     

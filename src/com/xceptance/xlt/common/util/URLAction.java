@@ -103,13 +103,11 @@ public class URLAction
 
     private final HttpResponseCodeValidator httpResponseCodeValidator;
 
-    private final String xPath;
+    private ArrayList<Validator> validator;
 
     // private final String regexpString;
 
     // private final Pattern regexp;
-
-    private final String text;
 
     private final boolean encoded;
 
@@ -225,20 +223,23 @@ public class URLAction
                                                                                                              yamlAction.getYAMLResponse()
                                                                                                                        .getHttpResponseCode())
                                                                             : HttpResponseCodeValidator.getInstance();
-       
-       
-            System.out.println(yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(0).getValidatorName());
-            System.out.println(yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList().get(1).getValidatorName());
-                                                                                                             
-            // get the xpath for the validation                                                                                                 
-            this.xPath = null;                                                                                                 
-            this.text = null;
-                                                                                                             
-            //TODO get the xpath
-            //TODO get the text
-                                                                                                             
 
-                                                                                                             
+            // get the validator                                                                                                 
+            if (yamlAction.YAMLResponseExists() && yamlAction.getYAMLResponse().YAMLResponseValidationExists())
+            {
+                List<YAMLValidator> validatorList = new ArrayList<YAMLValidator>();
+                validatorList = yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList();
+   
+                this.validator = new ArrayList<Validator>();
+                for (final YAMLValidator validator : validatorList)
+                {
+                    this.validator.add(new Validator(validator));
+                }
+            }
+            else
+            {
+                this.validator = null;
+            }
         }
         else
         {
@@ -254,8 +255,9 @@ public class URLAction
             this.encoded = false;
             this.parameters = null;
             this.httpResponseCodeValidator = null;
-            this.xPath = null;
-            this.text = null;
+            // this.xPath = null;
+            // this.text = null;
+            this.validator = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -515,7 +517,7 @@ public class URLAction
     {
         return getXPath(null);
     }
-    
+
     public String getText(final AbstractURLTestCase testCase)
     {
         // process bean shell part

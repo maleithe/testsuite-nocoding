@@ -31,17 +31,21 @@
             # this is a list, hence the verification takes place in that order
             # each verification step has a name to print it out when the step fails, 
             # makes debugging easier
-            - Header:
+            - Header1:
                 # xpath only works for DOM mode
                 Xpath: id('titleIndex')
                 Matches: Check out our new panorama posters!
-            - MainElements:
+            - Header2:
+                # xpath only works for DOM mode
+                Xpath: id('titleIndx')
+                Matches: Check out our new panorama posters!    
+            #- MainElements:
                 # checks the count of elements
-                Xpath: id('main')/div
-                Count: 8
-            - Cart:
+                #Xpath: id('main')/div
+                #Count: 8
+            #- Cart:
                 # if nothing is specified, it just checks that the path exists
-                Xpath: //div[@class='minicart']
+                #Xpath: //div[@class='minicart']
             #- Footer:
                 # regexp works for both modes
                 #Regex: F.*-Tool
