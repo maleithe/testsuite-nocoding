@@ -1,6 +1,5 @@
 package com.xceptance.xlt.common.util;
 
-
 public class Validator
 {
     private final String name;
@@ -8,7 +7,7 @@ public class Validator
     private final String xpath;
 
     private final String text;
-    
+
     /**
      * encapsulate the Common Validator
      * 
@@ -17,13 +16,23 @@ public class Validator
      */
     public Validator(final YAMLValidator validator)
     {
-
-        System.out.println(validator.getValidatorName());
-        System.out.println(validator.getValidatorXpath());
-        System.out.println(validator.getValidatorText());
-        
         this.name = validator.getValidatorName();
         this.xpath = validator.getValidatorXpath();
         this.text = validator.getValidatorText();
+    }
+    
+    public String getValidatorName()
+    {
+        return this.name;
+    }
+    
+    public String getValidatorXpath()
+    {
+        return this.xpath;
+    }
+    
+    public String getValidatorText()
+    {
+        return this.text;
     }
 }

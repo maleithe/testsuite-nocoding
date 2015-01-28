@@ -103,7 +103,7 @@ public class URLAction
 
     private final HttpResponseCodeValidator httpResponseCodeValidator;
 
-    private ArrayList<Validator> validator;
+    private ArrayList<Validator> validatorList;
 
     // private final String regexpString;
 
@@ -230,15 +230,15 @@ public class URLAction
                 List<YAMLValidator> validatorList = new ArrayList<YAMLValidator>();
                 validatorList = yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList();
    
-                this.validator = new ArrayList<Validator>();
+                this.validatorList = new ArrayList<Validator>();
                 for (final YAMLValidator validator : validatorList)
                 {
-                    this.validator.add(new Validator(validator));
+                    this.validatorList.add(new Validator(validator));
                 }
             }
             else
             {
-                this.validator = null;
+                this.validatorList = null;
             }
         }
         else
@@ -257,7 +257,7 @@ public class URLAction
             this.httpResponseCodeValidator = null;
             // this.xPath = null;
             // this.text = null;
-            this.validator = null;
+            this.validatorList = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -507,26 +507,35 @@ public class URLAction
         return httpResponseCodeValidator;
     }
 
-    public String getXPath(final AbstractURLTestCase testCase)
-    {
-        // process bean shell part
-        return interpreter != null ? interpreter.processDynamicData(testCase, xPath) : xPath;
-    }
+//    public String getXPath(final AbstractURLTestCase testCase)
+//    {
+//        // process bean shell part
+//        return interpreter != null ? interpreter.processDynamicData(testCase, xPath) : xPath;
+//    }
+//
+//    public String getXPath()
+//    {
+//        return getXPath(null);
+//    }
+//
+//    public String getText(final AbstractURLTestCase testCase)
+//    {
+//        // process bean shell part
+//        return interpreter != null ? interpreter.processDynamicData(testCase, text) : text;
+//    }
+//
+//    public String getText()
+//    {
+//        return getText(null);
+//    }
 
-    public String getXPath()
+    public ArrayList<Validator> getValidatorList()
     {
-        return getXPath(null);
+        return this.validatorList;
     }
-
-    public String getText(final AbstractURLTestCase testCase)
+    
+    public boolean validatorListExists()
     {
-        // process bean shell part
-        return interpreter != null ? interpreter.processDynamicData(testCase, text) : text;
+        return this.validatorList != null ? true : false;
     }
-
-    public String getText()
-    {
-        return getText(null);
-    }
-
 }
