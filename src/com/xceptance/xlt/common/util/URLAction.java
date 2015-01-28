@@ -346,10 +346,7 @@ public class URLAction
     // private List<NameValuePair> setupCSVParameters(final String parameters) throws UnsupportedEncodingException
     // {
     // final List<NameValuePair> list = new ArrayList<NameValuePair>();
-    //                
-    System.out.println(validatorName);
-    System.out.println(validatorXPath);
-    System.out.println(validatorText);
+    //
     // // ok, turn them into & split strings
     // final StringTokenizer tokenizer = new StringTokenizer(parameters, "&");
     // while (tokenizer.hasMoreTokens())
@@ -536,7 +533,7 @@ public class URLAction
     {
         return this.validatorList;
     }
-    
+
     public boolean validatorListExists()
     {
         return this.validatorList != null;

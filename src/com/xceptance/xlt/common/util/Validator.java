@@ -7,6 +7,8 @@ public class Validator
     private final String xpath;
 
     private final String text;
+    
+    private final Integer count;
 
     /**
      * encapsulate the Common Validator
@@ -19,6 +21,7 @@ public class Validator
         this.name = validator.getValidatorName();
         this.xpath = validator.getValidatorXpath();
         this.text = validator.getValidatorText();
+        this.count = validator.getValidatorCount();
     }
     
     public String getValidatorName()
@@ -34,5 +37,10 @@ public class Validator
     public String getValidatorText()
     {
         return this.text;
+    }
+    
+    public Integer getValidatorCount()
+    {
+        return this.count;
     }
 }

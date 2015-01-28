@@ -143,10 +143,12 @@ public class SimpleURL extends AbstractHtmlPageAction
                 final String validatorName = validator.getValidatorName();
                 final String validatorXPath = urlAction.getXPath(testCase, validator.getValidatorXpath());
                 final String validatorText = urlAction.getText(testCase, validator.getValidatorText());
+                final Integer validatorCount = validator.getValidatorCount();
                 
                 System.out.println(validatorName);
                 System.out.println(validatorXPath);
                 System.out.println(validatorText);
+                System.out.println(validatorCount);
 
                 if (validatorXPath != null)
                 {
@@ -168,6 +170,14 @@ public class SimpleURL extends AbstractHtmlPageAction
                                                                   validatorText, actual),
                                              RegExUtils.getFirstMatch(actual, validatorText));
                     }
+                    
+                    // shall we check the count of the xpath as well?
+                    if (validatorCount != null)
+                    {
+                        final Integer currentCount = elements.size();
+                        Assert.assertEquals("Xpath Count of he validation step " + validatorName + " has not the expected Count:", validatorCount, currentCount);
+                    }
+                    
                 }
                 else if (validatorText != null)
                 {

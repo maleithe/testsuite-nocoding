@@ -37,8 +37,8 @@
                 Matches: Check out our new panorama posters!   
             - MainElements:
                 # checks the count of elements
-                Xpath: id('main')/div
-                Count: 1
+                Xpath: id('main')/div/div
+                Count: 2
             - Carousel:
                 # if nothing is specified, it just checks that the path exists
                 Xpath: id('carousel')[@class='carousel slide']
