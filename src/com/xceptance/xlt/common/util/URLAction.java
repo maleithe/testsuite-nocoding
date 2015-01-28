@@ -346,7 +346,10 @@ public class URLAction
     // private List<NameValuePair> setupCSVParameters(final String parameters) throws UnsupportedEncodingException
     // {
     // final List<NameValuePair> list = new ArrayList<NameValuePair>();
-    //
+    //                
+    System.out.println(validatorName);
+    System.out.println(validatorXPath);
+    System.out.println(validatorText);
     // // ok, turn them into & split strings
     // final StringTokenizer tokenizer = new StringTokenizer(parameters, "&");
     // while (tokenizer.hasMoreTokens())
@@ -507,27 +510,27 @@ public class URLAction
         return httpResponseCodeValidator;
     }
 
-//    public String getXPath(final AbstractURLTestCase testCase)
-//    {
-//        // process bean shell part
-//        return interpreter != null ? interpreter.processDynamicData(testCase, xPath) : xPath;
-//    }
-//
-//    public String getXPath()
-//    {
-//        return getXPath(null);
-//    }
-//
-//    public String getText(final AbstractURLTestCase testCase)
-//    {
-//        // process bean shell part
-//        return interpreter != null ? interpreter.processDynamicData(testCase, text) : text;
-//    }
-//
-//    public String getText()
-//    {
-//        return getText(null);
-//    }
+    public String getXPath(final AbstractURLTestCase testCase, final String xPath)
+    {
+        // process bean shell part
+        return interpreter != null ? interpreter.processDynamicData(testCase, xPath) : xPath;
+    }
+
+    public String getXPath()
+    {
+        return getXPath(null, null);
+    }
+
+    public String getText(final AbstractURLTestCase testCase, final String text)
+    {
+        // process bean shell part
+        return interpreter != null ? interpreter.processDynamicData(testCase, text) : text;
+    }
+
+    public String getText()
+    {
+        return getText(null, null);
+    }
 
     public ArrayList<Validator> getValidatorList()
     {
@@ -536,6 +539,6 @@ public class URLAction
     
     public boolean validatorListExists()
     {
-        return this.validatorList != null ? true : false;
+        return this.validatorList != null;
     }
 }

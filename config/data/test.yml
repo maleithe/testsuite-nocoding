@@ -35,13 +35,13 @@
                 # xpath only works for DOM mode
                 Xpath: id('titleIndex')
                 Matches: Check out our new panorama posters!   
-            #- MainElements:
+            - MainElements:
                 # checks the count of elements
-                #Xpath: id('main')/div
-                #Count: 8
-            #- Cart:
+                Xpath: id('main')/div
+                Count: 1
+            - Carousel:
                 # if nothing is specified, it just checks that the path exists
-                #Xpath: //div[@class='minicart']
+                Xpath: id('carousel')[@class='carousel slide']
             #- Footer:
                 # regexp works for both modes
                 #Regex: F.*-Tool

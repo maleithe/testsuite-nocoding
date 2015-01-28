@@ -140,32 +140,44 @@ public class SimpleURL extends AbstractHtmlPageAction
             final ArrayList<Validator> validatorList = urlAction.getValidatorList();
             for (final Validator validator : validatorList)
             {
-                if (validator.getValidatorXpath() != null)
+                final String validatorName = validator.getValidatorName();
+                final String validatorXPath = urlAction.getXPath(testCase, validator.getValidatorXpath());
+                final String validatorText = urlAction.getText(testCase, validator.getValidatorText());
+                
+                System.out.println(validatorName);
+                System.out.println(validatorXPath);
+                System.out.println(validatorText);
+
+                if (validatorXPath != null)
                 {
                     // get the elements from the page
                     @SuppressWarnings("unchecked")
-                    final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(validator.getValidatorXpath());
+                    final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(validatorXPath);
 
                     // verify existence
-                    Assert.assertFalse("Xpath on validation step " + validator.getValidatorName() + " not found: <" + validator.getValidatorXpath() + ">", elements.isEmpty());
+                    Assert.assertFalse("Xpath on validation step " + validatorXPath + " not found: <"
+                                       + validatorName + ">", elements.isEmpty());
 
                     // shall we check the text as well?
-                    if (validator.getValidatorText() != null)
+                    if (validatorText != null)
                     {
                         final String actual = elements.get(0).asText().trim();
-                        Assert.assertNotNull(MessageFormat.format("Text on validation step " + validator.getValidatorName() + " does not match. Expected:<{0}> but was:<{1}>",
-                                                                  validator.getValidatorText(), actual),
-                                             RegExUtils.getFirstMatch(actual, validator.getValidatorText()));
+                        Assert.assertNotNull(MessageFormat.format("Text on validation step "
+                                                                      + validatorName
+                                                                      + " does not match. Expected:<{0}> but was:<{1}>",
+                                                                  validatorText, actual),
+                                             RegExUtils.getFirstMatch(actual, validatorText));
                     }
                 }
-                else if (validator.getValidatorText() != null)
+                else if (validatorText != null)
                 {
                     // ok, xpath was null, so we go for the text on the page only
                     final String responseString = page.getWebResponse().getContentAsString();
                     Assert.assertNotNull("Page was totally empty", responseString);
 
-                    Assert.assertNotNull(MessageFormat.format("Text is not on the page. Expected:<{0}>", validator.getValidatorText()),
-                                         RegExUtils.getFirstMatch(responseString, validator.getValidatorText()));
+                    Assert.assertNotNull(MessageFormat.format("Text is not on the page. Expected:<{0}>",
+                                                              validatorText),
+                                         RegExUtils.getFirstMatch(responseString, validatorText));
                 }
 
             }
