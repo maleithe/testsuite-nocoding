@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.csv.CSVRecord;
 
+import bsh.EvalError;
+
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.xceptance.xlt.api.util.XltLogger;
@@ -111,7 +113,7 @@ public class URLAction
 
     private final boolean encoded;
 
-    // private final List<String> xpathGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
+    private final List<String> xpathGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
     // private final List<String> regexpGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
@@ -224,12 +226,12 @@ public class URLAction
                                                                                                                        .getHttpResponseCode())
                                                                             : HttpResponseCodeValidator.getInstance();
 
-            // get the validator                                                                                                 
+            // get the validator
             if (yamlAction.YAMLResponseExists() && yamlAction.getYAMLResponse().YAMLResponseValidationExists())
             {
                 List<YAMLValidator> validatorList = new ArrayList<YAMLValidator>();
                 validatorList = yamlAction.getYAMLResponse().getYAMLResponseValidation().getYAMLResponseValidatorList();
-   
+
                 this.validatorList = new ArrayList<Validator>();
                 for (final YAMLValidator validator : validatorList)
                 {
@@ -538,4 +540,53 @@ public class URLAction
     {
         return this.validatorList != null;
     }
+
+    /**
+     * Returns the list of optional getters
+     * 
+     * @return list of xpath getters TODO test it
+     */
+    public List<String> getXPathGetterList(final AbstractURLTestCase testCase)
+    {
+        // don't do anything when there is no interpreter
+        if (interpreter == null)
+        {
+            return xpathGetterList;
+        }
+
+        final List<String> result = new ArrayList<String>(xpathGetterList.size());
+        for (int i = 0; i < xpathGetterList.size(); i++)
+        {
+            final String s = xpathGetterList.get(i);
+            result.add(interpreter.processDynamicData(testCase, s));
+        }
+
+        return result;
+    }
+
+    /**
+     * Take back the evaluation results to spice up the interpreter
+     * 
+     * @param xpathGettersResults
+     *            a list of results TODO test it
+     */
+    public void setXPathGetterResult(final List<Object> results)
+    {
+        // of course, we do that only with an interpreter running
+        if (interpreter != null)
+        {
+            for (int i = 1; i <= results.size(); i++)
+            {
+                try
+                {
+                    interpreter.set(XPATH_GETTER_PREFIX + i, results.get(i - 1));
+                }
+                catch (final EvalError e)
+                {
+                    XltLogger.runTimeLogger.warn("Unable to take in the result of an xpath evaluation.", e);
+                }
+            }
+        }
+    }
+
 }
