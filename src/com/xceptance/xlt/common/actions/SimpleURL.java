@@ -118,7 +118,7 @@ public class SimpleURL extends AbstractHtmlPageAction
         final HtmlPage page = getHtmlPage();
         addPageToInterpreter(page);
 
-        // downloader.loadRequests(this.testCase, this.yamlAction);
+        downloader.loadRequests(this.testCase, urlAction);
     }
 
     /*
