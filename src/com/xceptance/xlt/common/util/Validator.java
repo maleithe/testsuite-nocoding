@@ -9,6 +9,8 @@ public class Validator
     private final String text;
     
     private final Integer count;
+    
+    private final String regex;
 
     /**
      * encapsulate the Common Validator
@@ -22,6 +24,7 @@ public class Validator
         this.xpath = validator.getValidatorXpath();
         this.text = validator.getValidatorText();
         this.count = validator.getValidatorCount();
+        this.regex = validator.getValidatorRegex();
     }
     
     public String getValidatorName()
@@ -42,5 +45,10 @@ public class Validator
     public Integer getValidatorCount()
     {
         return this.count;
+    }
+    
+    public String getValidatorRegex()
+    {
+        return this.regex;
     }
 }

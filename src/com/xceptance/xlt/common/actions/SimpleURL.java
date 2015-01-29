@@ -144,6 +144,7 @@ public class SimpleURL extends AbstractHtmlPageAction
                 final String validatorXPath = urlAction.getXPath(testCase, validator.getValidatorXpath());
                 final String validatorText = urlAction.getText(testCase, validator.getValidatorText());
                 final Integer validatorCount = validator.getValidatorCount();
+                final String validatorRegex = validator.getValidatorRegex();
 
                 if (validatorXPath != null)
                 {
@@ -184,6 +185,13 @@ public class SimpleURL extends AbstractHtmlPageAction
                                          RegExUtils.getFirstMatch(responseString, validatorText));
                 }
 
+                if (validatorRegex != null)
+                {
+                    final String responseString = page.getWebResponse().getContentAsString();
+                    Assert.assertTrue("On validation step " + validator.getValidatorName()
+                                          + " the Text does not match on the given Regex:",
+                                      RegExUtils.getFirstMatch(responseString, validatorRegex).contains(validatorText));
+                }
             }
         }
     }

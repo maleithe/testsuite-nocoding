@@ -9,6 +9,8 @@ public class YAMLValidator
     public static final String MATCHES = "Matches";
 
     public static final String COUNT = "Count";
+    
+    public static final String REGEX = "Regex";
 
     private final String name;
 
@@ -17,6 +19,8 @@ public class YAMLValidator
     private final String text;
 
     private final Integer count;
+    
+    private final String regex;
 
     /**
      * encapsulate the YAML Validator
@@ -46,6 +50,10 @@ public class YAMLValidator
         // get the count for matching if available
         this.count = ((Map) _validator.get(this.name)).containsKey(COUNT) ? (Integer) ((Map) _validator.get(this.name)).get(COUNT)
                                                                           : null;
+        
+        // get the regex for matching if available
+        this.regex = ((Map) _validator.get(this.name)).containsKey(REGEX) ? (String) ((Map) _validator.get(this.name)).get(REGEX)
+                                                                          : null;
     }
 
     public String getValidatorName()
@@ -66,5 +74,10 @@ public class YAMLValidator
     public Integer getValidatorCount()
     {
         return this.count;
+    }
+    
+    public String getValidatorRegex()
+    {
+        return this.regex;
     }
 }

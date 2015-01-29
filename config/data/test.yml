@@ -46,10 +46,10 @@
                 # regexp works for both modes
                 #Regex: F.*-Tool
                 #Matches: Foobar-Tool
-            #- End:
+            - End:
                 # compare against a capture group, only the first group is used
-                #Regex: <div class="foo">(.*)</div>
-                #Matches: TextinGroup
+                Regex: <div id="main"(.*)</div>
+                Matches: Check out our new panorama posters!
 
 - Action:
     Name: XC-Homepage
