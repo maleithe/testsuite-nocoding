@@ -17,6 +17,7 @@
 package com.xceptance.xlt.common.tests;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -95,14 +96,13 @@ public class AbstractURLTestCase extends AbstractTestCase
         {
             final File file = new File(dataDirectory, getProperty("filename", Session.getCurrent().getUserName()
                                                                               + ".yml"));
-
-            // TODO
-            // before reading the yaml file replace all \t with 4 times \s
-
-
             final InputStream input = new FileInputStream(file);
             final Yaml yaml = new Yaml();
-            for (final Object yamlRecord : yaml.loadAll(input))
+
+            // before reading the yaml file replace all \t with \s\s\s\s
+            final InputStream is = new ByteArrayInputStream(IOUtils.toString(input).replace("\t", "    ").getBytes());
+            
+            for (final Object yamlRecord : yaml.loadAll(is))
             {
                 // check type before casting
                 if (yamlRecord instanceof List<?> && yamlRecord != null)
@@ -116,7 +116,8 @@ public class AbstractURLTestCase extends AbstractTestCase
                         // check type final before casting
                         if (yamlRecordList.get(yamlCounter) instanceof Map && yamlRecordList.get(yamlCounter) != null)
                         {
-                            urlActions.add(new URLAction(null, (Map<String, Object>) yamlRecordList.get(yamlCounter), interpreter));
+                            urlActions.add(new URLAction(null, (Map<String, Object>) yamlRecordList.get(yamlCounter),
+                                                         interpreter));
                         }
                     }
                 }
