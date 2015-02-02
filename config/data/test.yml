@@ -10,7 +10,7 @@
     Name: Poster-Homepage
     
     # the request details
-    Request:
+	Request:
         Url: "${host}/posters/"
         Type: GET   # GET and POST for now only
         Encoded: false
@@ -50,6 +50,43 @@
                 # compare against a capture group, only the first group is used
                 Regex: <div id="main"(.*)</div>
                 Matches: Check out our new panorama posters!
+                
+        #store:
+            # storing means putting stuff into variables for later reference down the road
+            # this can be subrequests or follow up activities
+            #- basketCount:
+                # stores the text of the element in basketCount, this is the only
+                # mode supported in the first version
+                #xpath: //div[@class='cart']/span
+            #- end:
+                # takes the stuff from the first capturing group and stores it in "end"
+                #regexp: <div class="foo">(.*)</div>
+               
+    subrequests: 
+        # static urls for everything really static, can use variables stored in the request above
+        - static:
+            - http://${host}/foo.jpg
+            - http://${host}/foo2.jpg
+            - http://${host}/foobar.css
+        # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
+        # further subrequests (for now)    
+        - XHR:
+            name: MiniCart
+            request:
+                url: "http://${host}/minicart"
+                type: GET
+                encoded: false
+            params:
+                time: ${NOW}
+            response:
+                httpcode: 200
+                validate:
+                    header:
+                        xpath: id('titleIndex')
+                        matches: Foobar2
+        # there could be more more static stuff after the ajax of course
+        - static:
+            - http://myhost.com/analytics.js
 
 - Action:
     Name: XC-Homepage
