@@ -55,19 +55,19 @@ public class TURL extends AbstractURLTestCase
             }
 
             // this is the part that deals with the static downloads
-            else if (csvBasedAction.isStaticContent())
-            {
-                if (lastAction == null)
-                {
-                    // we do not have any action yet, so we have to make one up
-                    lastAction = new SimpleURL(this, csvBasedAction, null, login, password);
-                }
-                else
-                {
-                    // it's content that belong to the last known action
-                    lastAction.addRequest(csvBasedAction.getUrlString());
-                }
-            }
+//            else if (csvBasedAction.isStaticContent())
+//            {
+//                if (lastAction == null)
+//                {
+//                    // we do not have any action yet, so we have to make one up
+//                    lastAction = new SimpleURL(this, csvBasedAction, null, login, password);
+//                }
+//                else
+//                {
+//                    // it's content that belong to the last known action
+//                    lastAction.addRequest(csvBasedAction.getUrlString());
+//                }
+//            }
 
             // handle XHR actions
             // else if (csvBasedAction.isXHRAction())

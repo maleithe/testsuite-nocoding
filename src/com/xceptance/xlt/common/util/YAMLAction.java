@@ -11,6 +11,8 @@ public class YAMLAction
 
     public static final String REQUEST = "Request";
     
+    public static final String SUBREQUEST = "Subrequest";
+    
     public static final String RESPONSE = "Response";
 
     public static final String TYPE_ACTION_YAML_NOTATION = "Action";
@@ -24,6 +26,8 @@ public class YAMLAction
     private final String type;
     
     private final YAMLResponse yamlResponse;
+    
+    private final YAMLSubRequest yamlSubRequest;
     
     /**
      * encapsulate the whole YAML Action
@@ -54,6 +58,7 @@ public class YAMLAction
             this.name = yamlAction.containsKey(NAME) ? yamlAction.get(NAME).toString() : null;
             this.yamlRequest = yamlAction.containsKey(REQUEST) ? new YAMLRequest(yamlAction, interpreter) : null;
             this.yamlResponse = yamlAction.containsKey(RESPONSE) ? new YAMLResponse(yamlAction, interpreter) : null;
+            this.yamlSubRequest = yamlAction.containsKey(SUBREQUEST) ? new YAMLSubRequest(yamlAction, interpreter) : null;
         }
         else
         {
@@ -61,6 +66,7 @@ public class YAMLAction
             this.yamlRequest = null;
             this.yamlResponse = null;
             this.type = null;
+            this.yamlSubRequest = null;
         }
 
     }

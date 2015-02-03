@@ -13,6 +13,8 @@
         Url: "http://dev02.lab04b.dw.demandware.net/s/SiteGenesis/home"
         Type: GET 
         Encoded: false
+        
+        Xhr: false  #true|false
 
     Response:
         Httpcode: 200
@@ -21,10 +23,11 @@
             - Navigation:
                 Xpath: id('navigation')
 
-    subrequests: 
+    Subrequest: 
         # static urls for everything really static, can use variables stored in the request above
-        - static:
+        - Static:
             - http://dev02.lab04b.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-apparel-catalog/default/v1415017657711/images/medium/PG.60119213.JJ887XX.PZ.jpg
+            - blabla.jpg
             #- http://${host}/foobar.css
         # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
         # further subrequests (for now)    
@@ -43,8 +46,14 @@
                         #xpath: id('titleIndex')
                         #matches: Foobar2
         # there could be more more static stuff after the ajax of course
-        #- static:
+        #- Static:
             #- http://myhost.com/analytics.js
 
+ 
                 
-                
+ #- Action:
+    #Name: XC-Homepage
+    #Request:
+        #Url: "https://www.xceptance.com/de/"
+        #Type: GET
+        #Encoded: false               
