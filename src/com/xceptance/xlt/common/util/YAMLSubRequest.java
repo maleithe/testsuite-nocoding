@@ -38,5 +38,10 @@ public class YAMLSubRequest
             this.yamlSubRequestList = null;
         }
     }
+    
+    public ArrayList<YAMLSubRequestElement> getYAMLSubRequestList()
+    {
+        return this.yamlSubRequestList;
+    }
 
 }

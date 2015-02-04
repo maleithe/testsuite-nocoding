@@ -43,15 +43,7 @@ public class URLAction
 
     public static final String TYPE_ACTION = "A";
 
-    public static final String TYPE_STATIC = "S";
-
-    public static final String TYPE_XHR_ACTION = "XA";
-
     public static final String TYPE_ACTION_YAML_NOTATION = "Action";
-
-    public static final String TYPE_STATIC_YAML_NOTATION = "Static";
-
-    public static final String TYPE_XHR_ACTION_YAML_NOTATION = "XHR";
 
     public static final String NAME = "Name";
 
@@ -116,6 +108,8 @@ public class URLAction
     private final List<String> xpathGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
     // private final List<String> regexpGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
+    
+    private final ArrayList<String> subRequestURLs;
 
     /**
      * Our bean shell
@@ -242,6 +236,21 @@ public class URLAction
             {
                 this.validatorList = null;
             }
+            
+            // get the sub request URLs
+            
+            
+            final ArrayList<YAMLSubRequestElement> _yamlSubRequestList = yamlAction.getYAMLSubRequest().getYAMLSubRequestList();
+            this.subRequestURLs = new ArrayList<String>();
+            for(final YAMLSubRequestElement element : _yamlSubRequestList)
+            {
+                for(final String subRequestURL : element.getYAMLSubRequestElement())
+                {
+                    this.subRequestURLs.add(subRequestURL);
+                    System.out.println(subRequestURL);
+                }
+            }
+            
         }
         else
         {
@@ -260,6 +269,7 @@ public class URLAction
             // this.xPath = null;
             // this.text = null;
             this.validatorList = null;
+            this.subRequestURLs = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -409,6 +419,16 @@ public class URLAction
 
         return list;
     }
+
+    /**
+     * Returns if this is static content to be downloaded
+     * 
+     * @return true if this is static content
+     */
+//    public boolean isStaticContent()
+//    {
+//        return this.;
+//    }
 
     /**
      * Returns true if this is an action to be executed

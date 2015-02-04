@@ -91,6 +91,11 @@ public class YAMLAction
         return this.type;
     }
     
+    public YAMLSubRequest getYAMLSubRequest()
+    {
+        return this.yamlSubRequest;
+    }
+    
     public boolean YAMLActionExists()
     {
         return this.type != null;
