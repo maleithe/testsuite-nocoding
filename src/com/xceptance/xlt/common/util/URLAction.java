@@ -108,7 +108,7 @@ public class URLAction
     private final List<String> xpathGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
     // private final List<String> regexpGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
-    
+
     private final ArrayList<String> subRequestURLs;
 
     /**
@@ -236,21 +236,27 @@ public class URLAction
             {
                 this.validatorList = null;
             }
-            
+
             // get the sub request URLs
-            
-            
-            final ArrayList<YAMLSubRequestElement> _yamlSubRequestList = yamlAction.getYAMLSubRequest().getYAMLSubRequestList();
-            this.subRequestURLs = new ArrayList<String>();
-            for(final YAMLSubRequestElement element : _yamlSubRequestList)
+            if (yamlAction.YAMLSubRequestExists() && yamlAction.getYAMLSubRequest().yamlSubRequestListExists())
             {
-                for(final String subRequestURL : element.getYAMLSubRequestElement())
+                final ArrayList<YAMLSubRequestElement> _yamlSubRequestList = yamlAction.getYAMLSubRequest()
+                                                                                       .getYAMLSubRequestList();
+                this.subRequestURLs = new ArrayList<String>();
+                for (final YAMLSubRequestElement element : _yamlSubRequestList)
                 {
-                    this.subRequestURLs.add(subRequestURL);
-                    System.out.println(subRequestURL);
+                    for (final String subRequestURL : element.getYAMLSubRequestElement())
+                    {
+                        this.subRequestURLs.add(subRequestURL);
+                        System.out.println(subRequestURL);
+                    }
                 }
             }
-            
+            else
+            {
+                this.subRequestURLs = null;
+            }
+
         }
         else
         {
@@ -425,10 +431,10 @@ public class URLAction
      * 
      * @return true if this is static content
      */
-//    public boolean isStaticContent()
-//    {
-//        return this.;
-//    }
+    // public boolean isStaticContent()
+    // {
+    // return this.;
+    // }
 
     /**
      * Returns true if this is an action to be executed

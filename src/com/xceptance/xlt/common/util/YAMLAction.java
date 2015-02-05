@@ -115,4 +115,9 @@ public class YAMLAction
     {
         return this.yamlResponse != null;
     }
+    
+    public boolean YAMLSubRequestExists()
+    {
+        return this.yamlSubRequest != null;
+    }
 }

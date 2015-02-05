@@ -43,5 +43,10 @@ public class YAMLSubRequest
     {
         return this.yamlSubRequestList;
     }
+    
+    public boolean yamlSubRequestListExists()
+    {
+        return this.yamlSubRequestList != null;
+    }
 
 }

@@ -49,7 +49,7 @@
         # there could be more more static stuff after the ajax of course
         - Static:
             - http://myhost.com/analytics.js
-
+ 
  
                 
 - Action:
