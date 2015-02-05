@@ -28,7 +28,7 @@ public class YAMLSubRequest
             final ArrayList<Object> _subRequestList = (ArrayList) yamlAction.get(SUBREQUEST);
 
             this.yamlSubRequestList = new ArrayList<YAMLSubRequestElement>();
-            for(final Object subRequest : _subRequestList)
+            for (final Object subRequest : _subRequestList)
             {
                 this.yamlSubRequestList.add(new YAMLSubRequestElement(subRequest));
             }
@@ -38,12 +38,12 @@ public class YAMLSubRequest
             this.yamlSubRequestList = null;
         }
     }
-    
+
     public ArrayList<YAMLSubRequestElement> getYAMLSubRequestList()
     {
         return this.yamlSubRequestList;
     }
-    
+
     public boolean yamlSubRequestListExists()
     {
         return this.yamlSubRequestList != null;

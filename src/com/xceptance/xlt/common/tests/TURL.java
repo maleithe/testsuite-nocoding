@@ -39,6 +39,8 @@ public class TURL extends AbstractURLTestCase
             // ok, usual action or static?
             if (urlAction.isAction())
             {
+                // System.out.println(urlAction.getStaticSubRequestURLs().get(0));
+
                 if (lastAction == null)
                 {
                     // our first action, so start the browser too
@@ -52,22 +54,16 @@ public class TURL extends AbstractURLTestCase
                     // And prepare the subsequent action
                     lastAction = new SimpleURL(this, lastAction, urlAction);
                 }
-            }
 
-            // this is the part that deals with the static downloads
-//            else if (csvBasedAction.isStaticContent())
-//            {
-//                if (lastAction == null)
-//                {
-//                    // we do not have any action yet, so we have to make one up
-//                    lastAction = new SimpleURL(this, csvBasedAction, null, login, password);
-//                }
-//                else
-//                {
-//                    // it's content that belong to the last known action
-//                    lastAction.addRequest(csvBasedAction.getUrlString());
-//                }
-//            }
+                // check if static content is available
+                if (urlAction.isStaticContentAvailable())
+                {
+                    for(final String staticContentURL : urlAction.getStaticSubRequestURLs())
+                    {
+                        lastAction.addRequest(staticContentURL);
+                    }
+                }
+            }
 
             // handle XHR actions
             // else if (csvBasedAction.isXHRAction())

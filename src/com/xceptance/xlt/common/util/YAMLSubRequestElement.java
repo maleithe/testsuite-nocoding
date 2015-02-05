@@ -32,5 +32,10 @@ public class YAMLSubRequestElement
     {
         return this.staticUrl;
     }
+    
+    public boolean isStaticContentURL()
+    {
+        return !this.staticUrl.isEmpty();
+    }
 
 }
