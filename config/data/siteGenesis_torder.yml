@@ -12,7 +12,7 @@
 	Name: Homepage
 	
 	Request:
-        Url: "http://dev02.lab04b.dw.demandware.net/s/SiteGenesis/home"
+        Url: "http://dev02.lab04c.dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site"
         Type: GET 
         Encoded: false
         
@@ -28,17 +28,16 @@
     Subrequest: 
         # static urls for everything really static, can use variables stored in the request above
         - Static:
-            - http://dev02.lab04b.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-apparel-catalog/default/v1415017657711/images/medium/PG.60119213.JJ887XX.PZ.jpg
-            - http://dev02.lab04b.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/-/default/v1415017657711/css/normalize.css
+            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-storefront-catalog-en/default/v1423750142996/images/MenuBanner-Electronics.jpg
+            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/resources/css/ext-all.css
             
         # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
         # further subrequests (for now)    
         #- XHR:
-            #name: MiniCart
-            #request:
-                #url: "http://${host}/minicart"
-                #type: GET
-                #encoded: false
+            #Request:
+                #Url: "http://${host}/minicart"
+                #Type: GET
+                #Encoded: false
             #params:
                 #time: ${NOW}
             #response:
@@ -49,7 +48,7 @@
                         #matches: Foobar2
         # there could be more more static stuff after the ajax of course
         - Static:
-            - http://dev02.lab04b.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-storefront-catalog-en/default/v1415017657711/pwr/engine/js/full.js
+            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/adapter/ext/ext-base.js
  
  
                 
