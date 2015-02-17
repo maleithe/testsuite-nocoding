@@ -72,20 +72,20 @@
             - http://${host}/foobar.css
         # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
         # further subrequests (for now)    
-        - XHR:
-            name: MiniCart
-            request:
-                url: "http://${host}/minicart"
-                type: GET
-                encoded: false
-            params:
-                time: ${NOW}
-            response:
-                httpcode: 200
-                validate:
-                    header:
-                        xpath: id('titleIndex')
-                        matches: Foobar2
+        #- XHR:
+            #name: MiniCart
+            #request:
+                #url: "http://${host}/minicart"
+                #type: GET
+                #encoded: false
+            #params:
+                #time: ${NOW}
+            #response:
+                #httpcode: 200
+                #validate:
+                    #header:
+                        #xpath: id('titleIndex')
+                        #matches: Foobar2
         # there could be more more static stuff after the ajax of course
         - static:
             - http://myhost.com/analytics.js

@@ -109,7 +109,11 @@ public class URLAction
 
     // private final List<String> regexpGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
-    private final ArrayList<String> staticSubRequestURLs;
+    //private final ArrayList<String> staticSubRequestURLs;
+    
+    private final ArrayList<String> subRequestURLs;
+    
+    //private final ArrayList<String> xhrSubRequestURLs;
 
     /**
      * Our bean shell
@@ -242,26 +246,30 @@ public class URLAction
             {
                 final ArrayList<YAMLSubRequestElement> _yamlSubRequestList = yamlAction.getYAMLSubRequest()
                                                                                        .getYAMLSubRequestList();
-                this.staticSubRequestURLs = new ArrayList<String>();
+                this.subRequestURLs = new ArrayList<String>();
                 for (final YAMLSubRequestElement element : _yamlSubRequestList)
                 {
                     if (element.isStaticContentURL())
                     {
                         for (final String subRequestURL : element.getYAMLSubRequestElement())
                         {
-                            this.staticSubRequestURLs.add(subRequestURL);
+                            this.subRequestURLs.add(subRequestURL);
                         }
                     }
                     // TODO complete for XHR
+                    else if (element.isXHR())
+                    {
+                        this.subRequestURLs.add(element.getYAMLxhrURL().getURLString());
+                    }
                     else
                     {
-                        this.staticSubRequestURLs.add(null);
+                        this.subRequestURLs.add(null);
                     }
                 }
             }
             else
             {
-                this.staticSubRequestURLs = null;
+                this.subRequestURLs = null;
             }
 
         }
@@ -282,7 +290,7 @@ public class URLAction
             // this.xPath = null;
             // this.text = null;
             this.validatorList = null;
-            this.staticSubRequestURLs = null;
+            this.subRequestURLs = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -438,10 +446,10 @@ public class URLAction
      * 
      * @return true if this is static content
      */
-    public boolean isStaticContentAvailable()
-     {
-         return this.staticSubRequestURLs != null && !this.staticSubRequestURLs.isEmpty();
-     }
+    public boolean isSubRequestAvailable()
+    {
+        return this.subRequestURLs != null && !this.subRequestURLs.isEmpty();
+    }
 
     /**
      * Returns true if this is an action to be executed
@@ -621,10 +629,10 @@ public class URLAction
             }
         }
     }
-    
-    public ArrayList<String> getStaticSubRequestURLs()
+
+    public ArrayList<String> getSubRequestURLs()
     {
-        return this.staticSubRequestURLs;
+        return this.subRequestURLs;
     }
 
 }

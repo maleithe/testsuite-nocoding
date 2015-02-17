@@ -21,7 +21,7 @@ public class YAMLSubRequest
      *            the bean shell interpreter to use
      * @throws MalformedURLException
      */
-    public YAMLSubRequest(final Map<String, Object> yamlAction, final ParamInterpreter interpreter)
+    public YAMLSubRequest(final Map<String, Object> yamlAction, final ParamInterpreter interpreter) throws MalformedURLException
     {
         if (yamlAction.get(SUBREQUEST) instanceof ArrayList && yamlAction.get(SUBREQUEST) != null)
         {
@@ -30,7 +30,7 @@ public class YAMLSubRequest
             this.yamlSubRequestList = new ArrayList<YAMLSubRequestElement>();
             for (final Object subRequest : _subRequestList)
             {
-                this.yamlSubRequestList.add(new YAMLSubRequestElement(subRequest));
+                this.yamlSubRequestList.add(new YAMLSubRequestElement(subRequest, interpreter));
             }
         }
         else

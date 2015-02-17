@@ -48,6 +48,8 @@ public class YAMLRequest
     {
         if (yamlAction instanceof Map && yamlAction != null)
         {
+            System.out.println(yamlAction.toString());
+            
             final Map<String, Object> yamlRequest = (Map<String, Object>) yamlAction.get(REQUEST);
 
             if (yamlRequest.containsKey(URL))

@@ -56,9 +56,9 @@ public class TURL extends AbstractURLTestCase
                 }
 
                 // check if static content is available
-                if (urlAction.isStaticContentAvailable())
+                if (urlAction.isSubRequestAvailable())
                 {
-                    for(final String staticContentURL : urlAction.getStaticSubRequestURLs())
+                    for(final String staticContentURL : urlAction.getSubRequestURLs())
                     {
                         lastAction.addRequest(staticContentURL);
                     }

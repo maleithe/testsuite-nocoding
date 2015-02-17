@@ -9,10 +9,10 @@
 
 - Action:
 
-	Name: Homepage
+	Name: HomePage
 	
 	Request:
-        Url: "http://dev02.lab04c.dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site"
+        Url: "http://dev03.stage05.dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site"
         Type: GET 
         Encoded: false
         
@@ -31,13 +31,34 @@
             - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-storefront-catalog-en/default/v1423750142996/images/MenuBanner-Electronics.jpg
             - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/resources/css/ext-all.css
             
+        - Static:
+            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/adapter/ext/ext-base.js
+
+ 
+- Action:
+
+	Name: ProductGridPage + Quickview
+	
+	Request:
+        Url: "http://dev03.stage05.dw.demandware.net/s/SiteGenesis/mens/clothing/suits/"
+        Type: GET 
+        Encoded: false
+        
+        Xhr: false  #true|false
+
+    Response:
+        Httpcode: 200
+        
+
+    Subrequest: 
+            
         # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
         # further subrequests (for now)    
-        #- XHR:
-            #Request:
-                #Url: "http://${host}/minicart"
-                #Type: GET
-                #Encoded: false
+        - XHR:
+            Request:
+                Url: "http://dev03.stage05.dw.demandware.net/s/SiteGenesis/mens/clothing/suits/25604524.html?dwvar_25604524_color=BLACKFB&source=quickview&format=ajax"
+                Type: GET
+                Encoded: false
             #params:
                 #time: ${NOW}
             #response:
@@ -46,11 +67,23 @@
                     #header:
                         #xpath: id('titleIndex')
                         #matches: Foobar2
-        # there could be more more static stuff after the ajax of course
-        - Static:
-            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/adapter/ext/ext-base.js
- 
- 
+                        
+        - XHR:
+            Request:
+                Url: "http://dev03.stage05.dw.demandware.net/s/SiteGenesis/mens/clothing/suits/25604524.html?dwvar_25604524_color=BLACKFB&source=quickview&format=ajax"
+                Type: GET
+                Encoded: false
+            #params:
+                #time: ${NOW}
+            #response:
+                #httpcode: 200
+                #validate:
+                    #header:
+                        #xpath: id('titleIndex')
+                        #matches: Foobar2
+
+
+
                 
 - Action:
     Name: XC-Homepage
