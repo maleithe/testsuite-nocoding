@@ -16,9 +16,11 @@
  */
 package com.xceptance.xlt.common.tests;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.xceptance.xlt.common.actions.SimpleURL;
+import com.xceptance.xlt.common.actions.SimpleURL_XHR;
 import com.xceptance.xlt.common.util.URLAction;
 
 /**
@@ -37,10 +39,8 @@ public class TURL extends AbstractURLTestCase
         for (final URLAction urlAction : urlActions)
         {
             // ok, usual action or static?
-            if (urlAction.isAction())
+            if (urlAction.isAction() && !urlAction.isStandAloneXHR())
             {
-                // System.out.println(urlAction.getStaticSubRequestURLs().get(0));
-
                 if (lastAction == null)
                 {
                     // our first action, so start the browser too
@@ -56,26 +56,28 @@ public class TURL extends AbstractURLTestCase
                 }
 
                 // check if static content is available
-                if (urlAction.isSubRequestAvailable())
+                if (urlAction.isStaticSubRequestAvailable())
                 {
-                    for(final String staticContentURL : urlAction.getSubRequestURLs())
+                    for (final String staticContentURL : urlAction.getStaticSubRequestURLs())
                     {
                         lastAction.addRequest(staticContentURL);
                     }
                 }
+
+                // TODO add XHR subRequests
             }
 
-            // handle XHR actions
-            // else if (csvBasedAction.isXHRAction())
-            // {
-            // if (lastAction == null)
-            // {
-            // Assert.fail("AJAX actions cannot be used as first action");
-            // }
-            //
-            // lastAction.run();
-            // lastAction = new SimpleURL_XHR(this, lastAction, csvBasedAction);
-            // }
+            // handle standAloneXHR actions
+            else if (urlAction.isAction() && urlAction.isStandAloneXHR())
+            {
+                if (lastAction == null)
+                {
+                    Assert.fail("AJAX actions cannot be used as first action");
+                }
+
+                lastAction.run();
+                lastAction = new SimpleURL_XHR(this, lastAction, urlAction);
+            }
         }
         if (lastAction != null)
         {

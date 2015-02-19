@@ -32,7 +32,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xceptance.common.util.RegExUtils;
 import com.xceptance.xlt.api.actions.AbstractHtmlPageAction;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
-import com.xceptance.xlt.common.util.CSVBasedURLAction;
+import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.common.util.UserAgentUtils;
 
 /**
@@ -48,7 +48,7 @@ public class SimpleURL_XHR extends SimpleURL
      * @param action
      */
     public SimpleURL_XHR(final AbstractURLTestCase testCase, final AbstractHtmlPageAction prevAction,
-        final CSVBasedURLAction action)
+        final URLAction action)
     {
         super(testCase, prevAction, action);
     }
@@ -63,7 +63,8 @@ public class SimpleURL_XHR extends SimpleURL
 
         UserAgentUtils.setUserAgentUID(this.getWebClient(), testCase.getProperty("userAgent.UID", false));
 
-        final WebRequest request = createWebRequestSettings(csvAction.getURL(), csvAction.getMethod(), csvAction.getParameters());
+        final WebRequest request = createWebRequestSettings(urlAction.getURL(this.testCase), urlAction.getMethod(),
+                                                            urlAction.getParameters(this.testCase));
         request.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
         request.setAdditionalHeader("Referer", page.getUrl().toExternalForm());
         request.setXHR();
@@ -71,7 +72,7 @@ public class SimpleURL_XHR extends SimpleURL
         response = getWebClient().loadWebResponse(request);
         setHtmlPage(page);
 
-        downloader.loadRequests(this.testCase, this.csvAction);
+        downloader.loadRequests(this.testCase, this.urlAction);
     }
 
     /**
@@ -81,8 +82,8 @@ public class SimpleURL_XHR extends SimpleURL
     protected void postValidate() throws Exception
     {
         // response code correct?
-        Assert.assertEquals("Response code did not match", csvAction.getHttpResponseCodeValidator().getHttpResponseCode(),
-                            response.getStatusCode());
+        Assert.assertEquals("Response code did not match", urlAction.getHttpResponseCodeValidator()
+                                                                    .getHttpResponseCode(), response.getStatusCode());
 
         final HtmlPage page = getHtmlPage();
         final HtmlElement container;
@@ -96,8 +97,8 @@ public class SimpleURL_XHR extends SimpleURL
             return;
         }
 
-        final String xpath = csvAction.getXPath(testCase);
-        final String text = csvAction.getText(testCase);
+        final String xpath = urlAction.getXPath();
+        final String text = urlAction.getText();
 
         // check anything else?
         if (xpath != null)
@@ -128,7 +129,7 @@ public class SimpleURL_XHR extends SimpleURL
         }
 
         // take care of the parameters to fill up the interpreter
-        final List<String> xpathGetters = csvAction.getXPathGetterList(testCase);
+        final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
         final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
         for (int i = 0; i < xpathGetters.size(); i++)
         {
@@ -165,7 +166,7 @@ public class SimpleURL_XHR extends SimpleURL
 
         }
         // send it back for spicing up the interpreter
-        csvAction.setXPathGetterResult(xpathGettersResults);
+        urlAction.setXPathGetterResult(xpathGettersResults);
 
     }
 }

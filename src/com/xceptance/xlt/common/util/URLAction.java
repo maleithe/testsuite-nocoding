@@ -105,15 +105,17 @@ public class URLAction
 
     private final boolean encoded;
 
+    private final boolean standAloneXHR;
+
     private final List<String> xpathGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
     // private final List<String> regexpGetterList = new ArrayList<String>(DYNAMIC_GETTER_COUNT);
 
-    //private final ArrayList<String> staticSubRequestURLs;
-    
-    private final ArrayList<String> subRequestURLs;
-    
-    //private final ArrayList<String> xhrSubRequestURLs;
+    private final ArrayList<String> staticSubRequestURLs;
+
+    // private final ArrayList<String> subRequestURLs;
+
+    private final ArrayList<XHRSubRequests> xhrSubRequests;
 
     /**
      * Our bean shell
@@ -203,8 +205,11 @@ public class URLAction
             }
             this.method = _method;
 
-            // set Encoeded to false if nothing is set
+            // set Encoded to false if nothing is set
             this.encoded = yamlAction.getYAMLRequest().getEncoded();
+
+            // set standAloneXHR to false if nothing is set
+            this.standAloneXHR = yamlAction.getYAMLRequest().getStandAloneXHR();
 
             // get the Action Params
             final List<NameValuePair> _params;
@@ -223,7 +228,6 @@ public class URLAction
                                                                                                              yamlAction.getYAMLResponse()
                                                                                                                        .getHttpResponseCode())
                                                                             : HttpResponseCodeValidator.getInstance();
-
             // get the validator
             if (yamlAction.YAMLResponseExists() && yamlAction.getYAMLResponse().YAMLResponseValidationExists())
             {
@@ -246,30 +250,35 @@ public class URLAction
             {
                 final ArrayList<YAMLSubRequestElement> _yamlSubRequestList = yamlAction.getYAMLSubRequest()
                                                                                        .getYAMLSubRequestList();
-                this.subRequestURLs = new ArrayList<String>();
+                this.staticSubRequestURLs = new ArrayList<String>();
+                this.xhrSubRequests = new ArrayList<XHRSubRequests>();
                 for (final YAMLSubRequestElement element : _yamlSubRequestList)
                 {
                     if (element.isStaticContentURL())
                     {
                         for (final String subRequestURL : element.getYAMLSubRequestElement())
                         {
-                            this.subRequestURLs.add(subRequestURL);
+                            this.staticSubRequestURLs.add(subRequestURL);
                         }
+                        this.xhrSubRequests.add(null);
                     }
-                    // TODO complete for XHR
                     else if (element.isXHR())
                     {
-                        this.subRequestURLs.add(element.getYAMLxhrURL().getURLString());
+                        this.xhrSubRequests.add(new XHRSubRequests(element.getYAMLxhrURL().getURLString(),
+                                                                   element.getYAMLxhrURL().getMethod()));
+                        this.staticSubRequestURLs.add(null);
                     }
                     else
                     {
-                        this.subRequestURLs.add(null);
+                        this.staticSubRequestURLs.add(null);
+                        this.xhrSubRequests.add(null);
                     }
                 }
             }
             else
             {
-                this.subRequestURLs = null;
+                this.staticSubRequestURLs = null;
+                this.xhrSubRequests = null;
             }
 
         }
@@ -285,12 +294,14 @@ public class URLAction
             this.url = null;
             this.method = null;
             this.encoded = false;
+            this.standAloneXHR = false;
             this.parameters = null;
             this.httpResponseCodeValidator = null;
             // this.xPath = null;
             // this.text = null;
             this.validatorList = null;
-            this.subRequestURLs = null;
+            this.staticSubRequestURLs = null;
+            this.xhrSubRequests = null;
 
             // the header is record 1, so we have to subtract one, for autonaming
             // this.name = StringUtils.defaultIfBlank(record.get(NAME), "Action-" + (record.getRecordNumber() - 1));
@@ -446,9 +457,46 @@ public class URLAction
      * 
      * @return true if this is static content
      */
-    public boolean isSubRequestAvailable()
+    public boolean isStaticSubRequestAvailable()
     {
-        return this.subRequestURLs != null && !this.subRequestURLs.isEmpty();
+        boolean staticSubRequestReturn = false;
+        if (staticSubRequestURLs != null)
+        {
+            for (final String staticSubRequestURL : staticSubRequestURLs)
+            {
+                if (staticSubRequestURL != null)
+                {
+                    staticSubRequestReturn = true;
+                }
+            }
+        }
+        return staticSubRequestReturn;
+    }
+
+    /**
+     * Returns if this is XHR as sub Requests content to be downloaded
+     * 
+     * @return true if this is XHR as subrequest
+     */
+    public boolean isXHRSubRequestAvailable()
+    {
+        boolean xhrSubRequestReturn = false;
+        if (xhrSubRequests != null)
+        {
+            for (final XHRSubRequests xhrSubRequest : xhrSubRequests)
+            {
+                if (xhrSubRequest != null)
+                {
+                    xhrSubRequestReturn = true;
+                }
+            }
+        }
+        return xhrSubRequestReturn;
+    }
+
+    public boolean isStandAloneXHR()
+    {
+        return this.standAloneXHR;
     }
 
     /**
@@ -630,9 +678,14 @@ public class URLAction
         }
     }
 
-    public ArrayList<String> getSubRequestURLs()
+    public ArrayList<String> getStaticSubRequestURLs()
     {
-        return this.subRequestURLs;
+        return this.staticSubRequestURLs;
+    }
+
+    public ArrayList<XHRSubRequests> getXHRSubRequests()
+    {
+        return this.xhrSubRequests;
     }
 
 }

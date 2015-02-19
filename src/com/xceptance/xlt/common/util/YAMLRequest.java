@@ -19,6 +19,8 @@ public class YAMLRequest
     public static final String TYPE = "Type";
 
     public static final String ENCODED = "Encoded";
+    
+    public static final String XHR = "Xhr";
 
     public static final String TRUE = "true";
 
@@ -31,6 +33,8 @@ public class YAMLRequest
     private final String method;
 
     private final boolean encoded;
+    
+    private final boolean standAloneXHR;
 
     private final YAMLRequestParams yamlRequestParams;
     
@@ -47,9 +51,7 @@ public class YAMLRequest
         throws MalformedURLException
     {
         if (yamlAction instanceof Map && yamlAction != null)
-        {
-            System.out.println(yamlAction.toString());
-            
+        {            
             final Map<String, Object> yamlRequest = (Map<String, Object>) yamlAction.get(REQUEST);
 
             if (yamlRequest.containsKey(URL))
@@ -84,7 +86,18 @@ public class YAMLRequest
             {
                 this.encoded = false;
             }
-
+            
+            final String _standAloneXHR;
+            if (yamlRequest.containsKey(XHR))
+            {
+                _standAloneXHR = yamlRequest.get(XHR).toString();
+                this.standAloneXHR = _standAloneXHR.contains(TRUE) ? true : false;
+            }
+            else
+            {
+                this.standAloneXHR = false;
+            }
+            
             if (yamlRequest.containsKey(PARAMETERS))
             {
                 this.yamlRequestParams = new YAMLRequestParams(yamlRequest);
@@ -100,6 +113,7 @@ public class YAMLRequest
             this.url = null;
             this.method = null;
             this.encoded = false;
+            this.standAloneXHR = false;
             this.yamlRequestParams = null;
         }
     }
@@ -122,6 +136,11 @@ public class YAMLRequest
     public boolean getEncoded()
     {
         return this.encoded;
+    }
+    
+    public boolean getStandAloneXHR()
+    {
+        return this.standAloneXHR;
     }
 
     public YAMLRequestParams getYAMLRequestParams()
