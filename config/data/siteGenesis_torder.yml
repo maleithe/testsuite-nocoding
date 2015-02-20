@@ -28,11 +28,11 @@
     Subrequest: 
         # static urls for everything really static, can use variables stored in the request above
         - Static:
-            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-storefront-catalog-en/default/v1423750142996/images/MenuBanner-Electronics.jpg
-            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/resources/css/ext-all.css
+            - http://dev03.stage05.dw.demandware.net/on/demandware.static/Sites-SiteGenesis-Site/Sites-storefront-catalog-en/default/v1424333222753/images/MenuBanner-New%20Arrivals.jpg
+            - http://dev03.stage05.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/resources/css/ext-all.css
             
         - Static:
-            - http://dev02.lab04c.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/adapter/ext/ext-base.js
+            - http://dev03.stage05.dw.demandware.net/on/demandware.static/Sites-Site/-/-/jscript/ext/adapter/ext/ext-base.js
 
  
 - Action:
@@ -57,20 +57,16 @@
         Httpcode: 200
         
         # verify
-        #Validate:
+        Validate:
             # this is a list, hence the verification takes place in that order
             # each verification step has a name to print it out when the step fails, 
             # makes debugging easier
-            #- Header:
+            - Header:
                 # xpath only works for DOM mode
-                #Xpath: id('titleIndex')
-                #Matches: Check out our new panorama posters!
-
-    Response:
-        Httpcode: 200
+                Xpath: .//div[@class='quickview-nav']
         
 
-    Subrequest: 
+    #Subrequest: 
             
         # an Ajax request, same syntax than the Action aka request, response, validate, store, but cannot have
         # further subrequests (for now)    
@@ -99,3 +95,11 @@
         Url: "https://www.xceptance.com/de/"
         Type: GET
         Encoded: false               
+
+    # the response validation
+    Response:
+        # expect these response code
+        Httpcode: 200
+
+
+        

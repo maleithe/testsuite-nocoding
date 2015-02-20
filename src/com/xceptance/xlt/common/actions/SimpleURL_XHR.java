@@ -34,6 +34,7 @@ import com.xceptance.xlt.api.actions.AbstractHtmlPageAction;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.common.util.UserAgentUtils;
+import com.xceptance.xlt.common.util.Validator;
 
 /**
  * Performs an AJAX request and parses the response into an container element that can be used for validation.
@@ -81,14 +82,16 @@ public class SimpleURL_XHR extends SimpleURL
     @Override
     protected void postValidate() throws Exception
     {
-        // response code correct?
-        Assert.assertEquals("Response code did not match", urlAction.getHttpResponseCodeValidator()
-                                                                    .getHttpResponseCode(), response.getStatusCode());
-
         final HtmlPage page = getHtmlPage();
+
+        // response code correct?
+        urlAction.getHttpResponseCodeValidator().validate(page);
+
         final HtmlElement container;
         if (DefaultPageCreator.determinePageType(response.getContentType()) == PageType.HTML)
         {
+            System.out.println(response.getContentAsString());
+            
             container = (HtmlElement) page.createElement("div");
             HTMLParser.parseFragment(container, response.getContentAsString());
         }
@@ -96,77 +99,109 @@ public class SimpleURL_XHR extends SimpleURL
         {
             return;
         }
-
-        final String xpath = urlAction.getXPath();
-        final String text = urlAction.getText();
-
-        // check anything else?
-        if (xpath != null)
+        
+        // check the validators
+        if (urlAction.validatorListExists())
         {
-            // get the elements from the page
-            @SuppressWarnings("unchecked")
-            final List<HtmlElement> elements = (List<HtmlElement>) container.getByXPath(xpath);
-
-            // verify existence
-            Assert.assertFalse("Xpath not found: <" + xpath + ">", elements.isEmpty());
-
-            // shall we check the text as well?
-            if (text != null)
+            final ArrayList<Validator> validatorList = urlAction.getValidatorList();
+            for (final Validator validator : validatorList)
             {
-                final String actual = elements.get(0).asText().trim();
-                Assert.assertNotNull(MessageFormat.format("Text does not match. Expected:<{0}> but was:<{1}>", text,
-                                                          actual), RegExUtils.getFirstMatch(actual, text));
-            }
-        }
-        else if (text != null)
-        {
-            // ok, xpath was null, so we go for the text on the page only
-            final String responseString = response.getContentAsString();
-            Assert.assertNotNull("Response was totally empty", responseString);
+                final String validatorName = validator.getValidatorName();
+                final String validatorXPath = urlAction.getXPath(testCase, validator.getValidatorXpath());
+                final String validatorText = urlAction.getText(testCase, validator.getValidatorText());
+                final Integer validatorCount = validator.getValidatorCount();
+                final String validatorRegex = validator.getValidatorRegex();
 
-            Assert.assertNotNull(MessageFormat.format("Text is not in response. Expected:<{0}>", text),
-                                 RegExUtils.getFirstMatch(responseString, text));
-        }
-
-        // take care of the parameters to fill up the interpreter
-        final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
-        final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
-        for (int i = 0; i < xpathGetters.size(); i++)
-        {
-            final String xp = xpathGetters.get(i);
-
-            // nothing to do, skip and return empty result
-            if (xp == null)
-            {
-                xpathGettersResults.add(null);
-                continue;
-            }
-
-            // get the elements from the page
-            @SuppressWarnings("unchecked")
-            final List<HtmlElement> elements = (List<HtmlElement>) container.getByXPath(xp);
-
-            if (!elements.isEmpty())
-            {
-                if (elements.size() > 1)
+                if (validatorXPath != null)
                 {
-                    // keep the entire list
-                    xpathGettersResults.add(elements);
+                    // get the elements from the page
+                    @SuppressWarnings("unchecked")
+                    final List<HtmlElement> elements = (List<HtmlElement>) page.getByXPath(validatorXPath);
+
+                    // verify existence
+                    Assert.assertFalse("Xpath on validation step " + validatorXPath + " not found: <" + validatorName
+                                       + ">", elements.isEmpty());
+
+                    // shall we check the text as well?
+                    if (validatorText != null)
+                    {
+                        final String actual = elements.get(0).asText().trim();
+                        Assert.assertNotNull(MessageFormat.format("Text on validation step " + validatorName
+                                                                      + " does not match. Expected:<{0}> but was:<{1}>",
+                                                                  validatorText, actual),
+                                             RegExUtils.getFirstMatch(actual, validatorText));
+                    }
+
+                    // shall we check the count of the xpath as well?
+                    if (validatorCount != null)
+                    {
+                        final Integer currentCount = elements.size();
+                        Assert.assertEquals("Xpath Count of he validation step " + validatorName
+                                            + " has not the expected Count:", validatorCount, currentCount);
+                    }
+
                 }
-                else
+                else if (validatorText != null)
                 {
-                    // keep only the elements
-                    xpathGettersResults.add(elements.get(0));
+                    // ok, xpath was null, so we go for the text on the page only
+                    final String responseString = page.getWebResponse().getContentAsString();
+                    Assert.assertNotNull("Page was totally empty", responseString);
+
+                    Assert.assertNotNull(MessageFormat.format("Text is not on the page. Expected:<{0}>", validatorText),
+                                         RegExUtils.getFirstMatch(responseString, validatorText));
+                }
+
+                if (validatorRegex != null)
+                {
+                    final String responseString = page.getWebResponse().getContentAsString();
+                    Assert.assertTrue("On validation step " + validator.getValidatorName()
+                                          + " the Text does not match on the given Regex:",
+                                      RegExUtils.getFirstMatch(responseString, validatorRegex).contains(validatorText));
                 }
             }
-            else
-            {
-                xpathGettersResults.add(null);
-            }
-
         }
-        // send it back for spicing up the interpreter
-        urlAction.setXPathGetterResult(xpathGettersResults);
+
+//        final String xpath = urlAction.getXPath();
+//        final String text = urlAction.getText();
+//        // take care of the parameters to fill up the interpreter
+//        final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
+//        final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
+//        for (int i = 0; i < xpathGetters.size(); i++)
+//        {
+//            final String xp = xpathGetters.get(i);
+//
+//            // nothing to do, skip and return empty result
+//            if (xp == null)
+//            {
+//                xpathGettersResults.add(null);
+//                continue;
+//            }
+//
+//            // get the elements from the page
+//            @SuppressWarnings("unchecked")
+//            final List<HtmlElement> elements = (List<HtmlElement>) container.getByXPath(xp);
+//
+//            if (!elements.isEmpty())
+//            {
+//                if (elements.size() > 1)
+//                {
+//                    // keep the entire list
+//                    xpathGettersResults.add(elements);
+//                }
+//                else
+//                {
+//                    // keep only the elements
+//                    xpathGettersResults.add(elements.get(0));
+//                }
+//            }
+//            else
+//            {
+//                xpathGettersResults.add(null);
+//            }
+//
+//        }
+//        // send it back for spicing up the interpreter
+//        urlAction.setXPathGetterResult(xpathGettersResults);
 
     }
 }
