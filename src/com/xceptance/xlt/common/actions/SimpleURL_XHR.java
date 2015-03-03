@@ -31,6 +31,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.xceptance.common.util.RegExUtils;
 import com.xceptance.xlt.api.actions.AbstractHtmlPageAction;
+import com.xceptance.xlt.api.util.HtmlPageUtils;
 import com.xceptance.xlt.common.tests.AbstractURLTestCase;
 import com.xceptance.xlt.common.util.URLAction;
 import com.xceptance.xlt.common.util.UserAgentUtils;
@@ -72,7 +73,7 @@ public class SimpleURL_XHR extends SimpleURL
 
         response = getWebClient().loadWebResponse(request);
         setHtmlPage(page);
-
+        
         downloader.loadRequests(this.testCase, this.urlAction);
     }
 
@@ -90,9 +91,7 @@ public class SimpleURL_XHR extends SimpleURL
         final HtmlElement container;
         if (DefaultPageCreator.determinePageType(response.getContentType()) == PageType.HTML)
         {
-            System.out.println(response.getContentAsString());
-            
-            container = (HtmlElement) page.createElement("div");
+            container = HtmlPageUtils.createHtmlElement("div", page.getBody());
             HTMLParser.parseFragment(container, response.getContentAsString());
         }
         else
