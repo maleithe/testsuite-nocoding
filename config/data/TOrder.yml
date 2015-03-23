@@ -190,4 +190,65 @@
         
         Validate:
             - Navigation:
-                Xpath: id('navigation')                                
+                Xpath: id('navigation')
+                
+- Action:
+	Name: Configure
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Product-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - prefv1: "Green"
+            - prefn1: "refinementColor"
+            - dwvar_25642441_color: "JJGC2XX#"
+            - pid: "25642441"
+            - srule: "product-name-ascending"
+            - start: "1"
+            - sz: "24"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: AddToCart
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Cart-AddProduct"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - format: "ajax"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: ViewCart
+	
+	Request:
+        Url: "https://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Cart-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: false 
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
