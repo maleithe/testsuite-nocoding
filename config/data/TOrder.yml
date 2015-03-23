@@ -1,0 +1,122 @@
+###########   TOrder for SiteGenesis  ####################
+#
+# only one test per *.yml or *.yaml  !!!
+#
+####################################
+
+
+- Action:
+	Name: HomePage
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site"
+        Type: GET 
+        Encoded: false    
+        Xhr: false  
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+
+- Action:
+	Name: SelectTopCategory
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/s/SiteGenesis/womens/"
+        Type: GET 
+        Encoded: false    
+        Xhr: false
+        
+        Parameters:
+            - cgid: "womens-clothing"  
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: RefineByCategory
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show?cgid=womens-clothing"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+         
+        Parameters:
+            - cgid: "womens-clothing"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: SelectCategory
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: false 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops" 
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: Paging
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - start: "24"
+            - sz: "12"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: RefineByColor
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - prefn1: "refinementColor"
+            - prefv1: "Green"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
