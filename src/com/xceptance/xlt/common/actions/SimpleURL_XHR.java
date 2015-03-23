@@ -159,48 +159,5 @@ public class SimpleURL_XHR extends SimpleURL
                 }
             }
         }
-
-//        final String xpath = urlAction.getXPath();
-//        final String text = urlAction.getText();
-//        // take care of the parameters to fill up the interpreter
-//        final List<String> xpathGetters = urlAction.getXPathGetterList(testCase);
-//        final List<Object> xpathGettersResults = new ArrayList<Object>(xpathGetters.size());
-//        for (int i = 0; i < xpathGetters.size(); i++)
-//        {
-//            final String xp = xpathGetters.get(i);
-//
-//            // nothing to do, skip and return empty result
-//            if (xp == null)
-//            {
-//                xpathGettersResults.add(null);
-//                continue;
-//            }
-//
-//            // get the elements from the page
-//            @SuppressWarnings("unchecked")
-//            final List<HtmlElement> elements = (List<HtmlElement>) container.getByXPath(xp);
-//
-//            if (!elements.isEmpty())
-//            {
-//                if (elements.size() > 1)
-//                {
-//                    // keep the entire list
-//                    xpathGettersResults.add(elements);
-//                }
-//                else
-//                {
-//                    // keep only the elements
-//                    xpathGettersResults.add(elements.get(0));
-//                }
-//            }
-//            else
-//            {
-//                xpathGettersResults.add(null);
-//            }
-//
-//        }
-//        // send it back for spicing up the interpreter
-//        urlAction.setXPathGetterResult(xpathGettersResults);
-
     }
 }

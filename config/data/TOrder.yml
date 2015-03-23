@@ -119,4 +119,75 @@
         Validate:
             - Navigation:
                 Xpath: id('navigation')
+
+- Action:
+	Name: ChangeItemsPerPage
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - prefn1: "refinementColor"
+            - prefv1: "Green"
+            - sz: "24"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
                 
+- Action:
+	Name: SortBy
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Search-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: true 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - prefn1: "refinementColor"
+            - prefv1: "Green"
+            - sz: "24"
+            - start: "0"
+            - srule: "product-name-ascending"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
+                
+- Action:
+	Name: ProductDetailView
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Product-Show"
+        Type: GET 
+        Encoded: false    
+        Xhr: false 
+        
+        Parameters:
+            - cgid: "womens-clothing-tops"
+            - prefv1: "Green"
+            - prefn1: "refinementColor"
+            - dwvar_25642441_color: "JJGC2XX#"
+            - pid: "25642441"
+            - srule: "product-name-ascending"
+            - start: "1"
+            - sz: "24"
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')                                
