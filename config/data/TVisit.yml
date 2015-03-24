@@ -1,0 +1,22 @@
+###########   TVisit for SiteGenesis  ####################
+#
+# only one test per *.yml or *.yaml  !!!
+#
+####################################
+
+
+- Action:
+	Name: HomePage
+	
+	Request:
+        Url: "http://dev02-lab04c-dw.demandware.net/on/demandware.store/Sites-SiteGenesis-Site"
+        Type: GET 
+        Encoded: false    
+        Xhr: false  
+
+    Response:
+        Httpcode: 200
+        
+        Validate:
+            - Navigation:
+                Xpath: id('navigation')
